@@ -1,9 +1,9 @@
+import Routes from './router';
+
 const App=()=> {
   return (
     <div className="App">
-      <header className="App-header">
-        test page
-      </header>
+      <Routes />
     </div>
   );
 }
