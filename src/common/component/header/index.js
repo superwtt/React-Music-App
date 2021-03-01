@@ -1,12 +1,11 @@
 import React from "react";
 
 import "./index.less";
-import defaultPic from "../../assets/default.png";
 
 const Header = () => {
   return (
-    <div>
-      <img src={defaultPic} alt="" />
+    <div className="mHeader">
+      <div className="icon" />
       <span className="text">Chicken Music</span>
     </div>
   );
