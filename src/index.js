@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';  // import 一个样式或者类的库
+import './common/style/index.less';  // import 一个样式或者类的库
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
+
 
 ReactDOM.render(
   <React.StrictMode>
