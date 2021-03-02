@@ -1,13 +1,13 @@
 import React from "react";
-import { NavLink, BrowserRouter } from "react-router-dom";
+import { NavLink, HashRouter } from "react-router-dom";
 
 import "./index.less";
 
 const Tab = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="tab">
-        <NavLink to="/recommend" className="tabItem active">
+        <NavLink to="/recommend" className="tabItem">
           <span className="tabLink ">推荐</span>
         </NavLink>
         <NavLink to="/singer" className="tabItem">
@@ -20,7 +20,7 @@ const Tab = () => {
           <span className="tabLink ">搜索</span>
         </NavLink>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
