@@ -7,7 +7,7 @@ const Tab = () => {
   return (
     <BrowserRouter>
       <div className="tab">
-        <NavLink to="/recommend" className="tabItem">
+        <NavLink to="/recommend" className="tabItem active">
           <span className="tabLink ">推荐</span>
         </NavLink>
         <NavLink to="/singer" className="tabItem">
