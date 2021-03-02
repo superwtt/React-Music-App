@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, Router, HashRouter, Redirect } from "react-router-dom";
+import { Switch, Route, HashRouter, Redirect } from "react-router-dom";
 import Recommend from "../pages/recommend";
 import Singer from "../pages/singer";
 import Rank from "../pages/rank";

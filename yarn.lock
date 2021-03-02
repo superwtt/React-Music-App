@@ -3237,6 +3237,11 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
+clone@^2.1.1:
+  version "2.1.2"
+  resolved "https://registry.npm.taobao.org/clone/download/clone-2.1.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fclone%2Fdownload%2Fclone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
+  integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -4089,6 +4094,13 @@ dom-serializer@0:
   dependencies:
     domelementtype "^2.0.1"
     entities "^2.0.0"
+
+dom7@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npm.taobao.org/dom7/download/dom7-3.0.0.tgz#b861ce5d67a6becd7aaa3ad02942ff14b1240331"
+  integrity sha1-uGHOXWemvs16qjrQKUL/FLEkAzE=
+  dependencies:
+    ssr-window "^3.0.0-alpha.1"
 
 domain-browser@^1.1.1:
   version "1.2.0"
@@ -6824,12 +6836,14 @@ last-call-webpack-plugin@^3.0.0:
     lodash "^4.17.5"
     webpack-sources "^1.1.0"
 
-less-loader@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-8.0.0.tgz#cd7f10e3c13ca8f71244a11ee396405ae3ce9c82"
-  integrity sha512-tnDs0ZdwPZgNOg0NGJ0sAD2KViG9TvOMDVibT33fH1bpLkT4xMo5Ue2FsbjFsVsUKtuRTlU0tYp2/lRizrycLg==
+less-loader@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npm.taobao.org/less-loader/download/less-loader-5.0.0.tgz?cache=0&sync_timestamp=1612196876790&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fless-loader%2Fdownload%2Fless-loader-5.0.0.tgz#498dde3a6c6c4f887458ee9ed3f086a12ad1b466"
+  integrity sha1-SY3eOmxsT4h0WO6e0/CGoSrRtGY=
   dependencies:
-    klona "^2.0.4"
+    clone "^2.1.1"
+    loader-utils "^1.1.0"
+    pify "^4.0.1"
 
 less@^4.1.1:
   version "4.1.1"
@@ -10037,6 +10051,11 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
+ssr-window@^3.0.0, ssr-window@^3.0.0-alpha.1:
+  version "3.0.0"
+  resolved "https://registry.npm.taobao.org/ssr-window/download/ssr-window-3.0.0.tgz?cache=0&sync_timestamp=1604919636199&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fssr-window%2Fdownload%2Fssr-window-3.0.0.tgz#fd5b82801638943e0cc704c4691801435af7ac37"
+  integrity sha1-/VuCgBY4lD4MxwTEaRgBQ1r3rDc=
+
 ssri@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.1.tgz#2a3c41b28dd45b62b63676ecb74001265ae9edd8"
@@ -10336,6 +10355,19 @@ svgo@^1.0.0, svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+swiper@3.4.2:
+  version "3.4.2"
+  resolved "https://registry.npm.taobao.org/swiper/download/swiper-3.4.2.tgz#39d6b410b1a39833e1f72d3b72999df5f5e38392"
+  integrity sha1-Oda0ELGjmDPh9y07cpmd9fXjg5I=
+
+swiper@^6.4.15:
+  version "6.4.15"
+  resolved "https://registry.npm.taobao.org/swiper/download/swiper-6.4.15.tgz#0fb153b3000c0dd26ab21ea9e8d1ab0ebe9e33cb"
+  integrity sha1-D7FTswAMDdJqsh6p6NGrDr6eM8s=
+  dependencies:
+    dom7 "^3.0.0"
+    ssr-window "^3.0.0"
 
 symbol-tree@^3.2.4:
   version "3.2.4"
