@@ -1,12 +1,17 @@
 import React from "react";
 import Slider from "@/common/component/slider";
+import Scroll from '@/common/component/scroll';
 
 import './index.less';
 
 const Recommend = () => {
   return (
-    <div>
+<div className="recommend" ref="recommend">
+    <Scroll className="recommendContent">
+    <div className="sliderWrapper">
       <Slider />
+    </div>
+      
       <div className="recommendList">
         <h1 className="listTitle">热门歌单推荐</h1>
         <ul>
@@ -75,6 +80,7 @@ const Recommend = () => {
           </li>
         </ul>
       </div>
+    </Scroll>
     </div>
   );
 };
