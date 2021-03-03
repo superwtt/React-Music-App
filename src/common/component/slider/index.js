@@ -10,9 +10,8 @@ const Slider = () => {
     new Swiper(".swiper-container", {
       autoplay: 3000,
       loop: true,
-      pagination: {
-        el: ".swiper-pagination",
-      },
+      pagination: '.swiper-pagination',
+      paginationClickable: true
     });
   }, []);
   return (
