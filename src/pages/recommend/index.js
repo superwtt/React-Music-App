@@ -12,7 +12,7 @@ const Recommend = () => {
         <ul>
           <li className="item">
             <div className="icon">
-              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" />
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
             </div>
             <div className="text">
               <h2 className="name">孟冬</h2>
@@ -21,7 +21,7 @@ const Recommend = () => {
           </li>
           <li className="item">
             <div className="icon">
-              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" />
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1"  alt=""/>
             </div>
             <div className="text">
               <h2 className="name">孟冬</h2>
@@ -30,7 +30,7 @@ const Recommend = () => {
           </li>
           <li className="item">
             <div className="icon">
-              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" />
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
             </div>
             <div className="text">
               <h2 className="name">孟冬</h2>
@@ -39,7 +39,34 @@ const Recommend = () => {
           </li>
           <li className="item">
             <div className="icon">
-              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" />
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
+            </div>
+            <div className="text">
+              <h2 className="name">孟冬</h2>
+              <p className="desc">温柔公子张真源，磁性嗓音诱你</p>
+            </div>
+          </li>
+          <li className="item">
+            <div className="icon">
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
+            </div>
+            <div className="text">
+              <h2 className="name">孟冬</h2>
+              <p className="desc">温柔公子张真源，磁性嗓音诱你</p>
+            </div>
+          </li>
+          <li className="item">
+            <div className="icon">
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
+            </div>
+            <div className="text">
+              <h2 className="name">孟冬</h2>
+              <p className="desc">温柔公子张真源，磁性嗓音诱你</p>
+            </div>
+          </li>
+          <li className="item">
+            <div className="icon">
+              <img width="60" height="60" src="http://qpic.y.qq.com/music_cover/JKNRKMiciaU6Su0ibZV93emzptlPMwSbiaksya7Ck7lcAvtk4QPR2YtSQw/300?n=1" alt="" />
             </div>
             <div className="text">
               <h2 className="name">孟冬</h2>
