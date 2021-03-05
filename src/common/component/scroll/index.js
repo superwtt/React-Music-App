@@ -9,7 +9,6 @@ const Scroll = (props) => {
     new BScroll(wrapper, {
       probeType: 1,
     });
-
   };
 
   useEffect(() => {
