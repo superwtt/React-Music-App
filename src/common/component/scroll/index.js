@@ -8,6 +8,7 @@ const Scroll = (props) => {
     const wrapper = document.querySelector('wrapper')
     new BScroll(wrapper, {
       probeType: 1,
+      eventPassthrough:'vertical',
     });
   };
 
@@ -16,7 +17,7 @@ const Scroll = (props) => {
   }, []);
 
   return (
-   <div className="wrapper">
+   <div refs="wrapper">
      {
        props.children
      }
