@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Slider from "@/common/component/slider";
 import Scroll from "@/common/component/scroll";
 
 // import "./index.less";
 
 const Recommend = () => {
+  const [refresh, setRefresh] = useState(false);
+
+  const handleScroll = (e) => {
+    console.log(e);
+  };
+
   return (
     <div className="recommend">
-      <Scroll>
-        <div className="">
+      <Scroll
+        refresh={refresh}
+        onScroll={(e) => {
+          handleScroll(e);
+        }}
+      >
+        <div className="content">
           <Slider />
           <div className="recommendList">
             <h1 className="listTitle">热门歌单推荐</h1>
