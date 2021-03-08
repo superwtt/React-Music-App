@@ -2,7 +2,7 @@ import React from "react";
 import Slider from "@/common/component/slider";
 import Scroll from "@/common/component/scroll";
 
-import "./index.less";
+// import "./index.less";
 
 const Recommend = () => {
   return (
