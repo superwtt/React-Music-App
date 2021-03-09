@@ -1,9 +1,9 @@
 import React from "react";
+import Scroll from "react-bscroll";
+import "react-bscroll/lib/react-scroll.css";
 
-const Scroll = ()=>{
-    return (
-        <div></div>
-    )
-}
+const ScrollCompo = (props) => {
+  return <Scroll>{props.children}</Scroll>;
+};
 
-export default Scroll;
+export default ScrollCompo;
