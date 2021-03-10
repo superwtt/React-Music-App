@@ -1,18 +1,17 @@
-import Routes from './router';
+import Routes from "./router";
+import { Provider } from "react-redux";
+
 import Tab from "@/common/component/tab";
 import Header from "@/common/component/header";
 
-
-const App=()=> {
+const App = () => {
   return (
-    <div className="App">
+    <Provider className="App">
       <Header />
       <Tab />
       <Routes />
-    </div>
+    </Provider>
   );
-}
+};
 
 export default App;
-
-
