@@ -6,7 +6,7 @@ import Slider from "@/common/component/slider";
 
 import "./index.less";
 
-const Recommend = () => {
+const Recommend = props => {
   return (
     <div className="recommend">
       {/* <Scroll> */}
@@ -119,4 +119,14 @@ const Recommend = () => {
   );
 };
 
-export default connect()(Recommend);
+// state是状态树
+const mapStateToProps = state => ({
+  CompanyName:state.CompanyName
+});
+
+// dispatch(action) 方法更新state
+const mapDispatchToProps = dispatch => ({
+  
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Recommend);
