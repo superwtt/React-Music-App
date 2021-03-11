@@ -129,7 +129,7 @@ const mapStateToProps = (state) => ({
 
 // dispatch(action) 方法更新state
 const mapDispatchToProps = (dispatch) => ({
-
+   getRecommendList:actionCreators.getRecommendList(dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Recommend);
