@@ -1,0 +1,1 @@
+export const GET_SLIDER = 'common/GET_SLIDER'
