@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 import Slider from "@/common/component/slider";
-
-import * as actionCreators from './store/actionCreators'
-
+import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
 const Recommend = (props) => {
-  const getRecommendList = () => {};
+  const { slider } = props;
 
-  useEffect(() => {}, []);
+  useEffect(async () => {
+    await props.getRecommendList();
+    console.log(slider);
+  }, [slider.length]);
 
   return (
     <div className="recommend">
@@ -124,12 +125,16 @@ const Recommend = (props) => {
 
 // state是状态树
 const mapStateToProps = (state) => ({
-  CompanyName: state.CompanyName,
+  slider: state.recommendReducer.slider,
 });
 
 // dispatch(action) 方法更新state
-const mapDispatchToProps = (dispatch) => ({
-   getRecommendList:actionCreators.getRecommendList(dispatch)
-});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getRecommendList() {
+      dispatch(actionCreators.getRecommendList());
+    },
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Recommend);

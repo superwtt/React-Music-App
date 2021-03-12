@@ -1,15 +1,17 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const errorOverlayMiddleware = require('react-dev-utils/errorOverlayMiddleware');
-const evalSourceMapMiddleware = require('react-dev-utils/evalSourceMapMiddleware');
-const noopServiceWorkerMiddleware = require('react-dev-utils/noopServiceWorkerMiddleware');
-const ignoredFiles = require('react-dev-utils/ignoredFiles');
-const redirectServedPath = require('react-dev-utils/redirectServedPathMiddleware');
-const paths = require('./paths');
-const getHttpsConfig = require('./getHttpsConfig');
+const fs = require("fs");
+const errorOverlayMiddleware = require("react-dev-utils/errorOverlayMiddleware");
+const evalSourceMapMiddleware = require("react-dev-utils/evalSourceMapMiddleware");
+const noopServiceWorkerMiddleware = require("react-dev-utils/noopServiceWorkerMiddleware");
+const ignoredFiles = require("react-dev-utils/ignoredFiles");
+const redirectServedPath = require("react-dev-utils/redirectServedPathMiddleware");
+const paths = require("./paths");
+const getHttpsConfig = require("./getHttpsConfig");
+const bodyParser = require('body-parser')
+const axios = require('axios')
 
-const host = process.env.HOST || '0.0.0.0';
+const host = process.env.HOST || "0.0.0.0";
 const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/sockjs-node'
 const sockPort = process.env.WDS_SOCKET_PORT;
@@ -33,12 +35,12 @@ module.exports = function (proxy, allowedHost) {
     // specified the `proxy` setting. Finally, we let you override it if you
     // really know what you're doing with a special environment variable.
     disableHostCheck:
-      !proxy || process.env.DANGEROUSLY_DISABLE_HOST_CHECK === 'true',
+      !proxy || process.env.DANGEROUSLY_DISABLE_HOST_CHECK === "true",
     // Enable gzip compression of generated files.
     compress: true,
     // Silence WebpackDevServer's own logs since they're generally not useful.
     // It will still show compile warnings and errors with this setting.
-    clientLogLevel: 'none',
+    clientLogLevel: "none",
     // By default WebpackDevServer serves physical files from current directory
     // in addition to all the virtual build products that it serves from memory.
     // This is confusing because those files won’t automatically be available in
@@ -65,7 +67,7 @@ module.exports = function (proxy, allowedHost) {
     hot: true,
     // Use 'ws' instead of 'sockjs-node' on server since we're using native
     // websockets in `webpackHotDevClient`.
-    transportMode: 'ws',
+    transportMode: "ws",
     // Prevent a WS client from getting injected as we're already including
     // `webpackHotDevClient`.
     injectClient: false,
@@ -114,6 +116,163 @@ module.exports = function (proxy, allowedHost) {
         // This registers user provided middleware for proxy reasons
         require(paths.proxySetup)(app);
       }
+      app.get("/api/getDiscList", function (req, res) {
+        const url =
+          "https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg";
+        axios
+          .get(url, {
+            headers: {
+              referer: "https://c.y.qq.com/",
+              host: "c.y.qq.com",
+            },
+            params: req.query,
+          })
+          .then((response) => {
+            res.json(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+
+      app.get("/api/getCdInfo", function (req, res) {
+        const url =
+          "https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg";
+        axios
+          .get(url, {
+            headers: {
+              referer: "https://c.y.qq.com/",
+              host: "c.y.qq.com",
+            },
+            params: req.query,
+          })
+          .then((response) => {
+            let ret = response.data;
+            if (typeof ret === "string") {
+              const reg = /^\w+\(({.+})\)$/;
+              const matches = ret.match(reg);
+              if (matches) {
+                ret = JSON.parse(matches[1]);
+              }
+            }
+            res.json(ret);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+
+      app.get("/api/lyric", function (req, res) {
+        const url = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg";
+
+        axios
+          .get(url, {
+            headers: {
+              referer: "https://c.y.qq.com/",
+              host: "c.y.qq.com",
+            },
+            params: req.query,
+          })
+          .then((response) => {
+            let ret = response.data;
+            if (typeof ret === "string") {
+              const reg = /^\w+\(({.+})\)$/;
+              const matches = ret.match(reg);
+              if (matches) {
+                ret = JSON.parse(matches[1]);
+              }
+            }
+            res.json(ret);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+
+      app.post("/api/getPurlUrl", bodyParser.json(), function (req, res) {
+        const url = "https://u.y.qq.com/cgi-bin/musicu.fcg";
+        axios
+          .post(url, req.body, {
+            headers: {
+              referer: "https://y.qq.com/",
+              origin: "https://y.qq.com",
+              "Content-type": "application/x-www-form-urlencoded",
+            },
+          })
+          .then((response) => {
+            res.json(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+
+      app.get("/api/search", function (req, res) {
+        const url = "https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp";
+        axios
+          .get(url, {
+            headers: {
+              referer: "https://c.y.qq.com/",
+              host: "c.y.qq.com",
+            },
+            params: req.query,
+          })
+          .then((response) => {
+            res.json(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+
+      app.get("/api/getTopBanner", function (req, res) {
+        const url = "https://u.y.qq.com/cgi-bin/musicu.fcg";
+        const jumpPrefixMap = {
+          10002: "https://y.qq.com/n/yqq/album/",
+          10014: "https://y.qq.com/n/yqq/playlist/",
+          10012: "https://y.qq.com/n/yqq/mv/v/",
+        };
+
+        axios
+          .get(url, {
+            headers: {
+              referer: "https://u.y.qq.com/",
+              host: "u.y.qq.com",
+            },
+            params: req.query,
+          })
+          .then((response) => {
+            response = response.data;
+            if (response.code === 0) {
+              const slider = [];
+              const content =
+                response.focus.data && response.focus.data.content;
+              if (content) {
+                for (let i = 0; i < content.length; i++) {
+                  const item = content[i];
+                  const sliderItem = {};
+                  const jumpPrefix = jumpPrefixMap[item.type || 10002];
+                  sliderItem.id = item.id;
+                  sliderItem.linkUrl =
+                    jumpPrefix + item.jump_info.url + ".html";
+                  sliderItem.picUrl = item.pic_info.url;
+                  slider.push(sliderItem);
+                }
+              }
+              res.json({
+                code: 0,
+                data: {
+                  slider,
+                },
+              });
+            } else {
+              res.json(response);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
     },
     after(app) {
       // Redirect to `PUBLIC_URL` or `homepage` from `package.json` if url not match

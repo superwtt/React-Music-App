@@ -1,17 +1,13 @@
 import * as constants from "./actionTypes";
 
 const defaultState = {
-  CompanyName: "123321",
-  UserName: "",
-  UserPass: "",
-  loginType: "Company",
-  toHome: false,
+  slider:[]
 };
 
 export default (state = defaultState, action) => {
   switch (action.type) {
     case constants.GET_RECOMMEND_LIST:
-      return state.set("toHome", true);
+      return {...state,slider:action.value};
     default:
       return state;
   }
