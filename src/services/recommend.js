@@ -2,7 +2,7 @@ import { commonParams } from "./config";
 import axios from "axios";
 
 export function getRecommend() {
-  const url = "/api/getTopBanner";
+  const url = "api/getTopBanner";
   const data = Object.assign({}, commonParams, {
     platform: 'yqq.json',
     hostUin: 0,
