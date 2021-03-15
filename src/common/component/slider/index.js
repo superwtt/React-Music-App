@@ -9,13 +9,15 @@ const Slider = (props) => {
   const { slider } = props;
 
   useEffect(() => {
-    new Swiper(".swiper-container", {
-      autoplay: 3000,
-      loop: true,
-      pagination: ".swiper-pagination",
-      paginationClickable: true,
-    });
-  }, []);
+    slider.length &&
+      new Swiper(".swiper-container", {
+        autoplay: 3000,
+        loop: true,
+        pagination: ".swiper-pagination",
+        paginationClickable: true,
+      });
+  }, [slider]);
+
   return (
     <div className="swiper-container">
       <div className="swiper-wrapper">

@@ -9,8 +9,6 @@ const Recommend = (props) => {
 
   const { slider,discList } = props;
 
-  console.log(slider)
-
   useEffect(() => {
     props.getRecommendList();
     props.getDiscList();
