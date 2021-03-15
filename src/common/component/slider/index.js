@@ -6,6 +6,7 @@ import "swiper/dist/css/swiper.min.css";
 import "./index.less";
 
 const Slider = (props) => {
+  
   const { slider } = props;
 
   useEffect(() => {
