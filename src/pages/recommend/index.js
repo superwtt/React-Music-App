@@ -6,10 +6,10 @@ import Slider from "@/common/component/slider";
 import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
+const COUNT = 0;
+
 const Recommend = (props) => {
   const { slider, discList } = props;
-
-  const listRef = useRef(false);
 
   const cacheStore = (arr) => {
     if (arr.length) {
@@ -29,23 +29,35 @@ const Recommend = (props) => {
     });
   };
 
-  const calcClient = ()=>{
+  const calcClient = () => {
     const clientHeight = document.body.clientHeight;
     const targetElement = document.getElementsByClassName("swiper-wrap");
+
+    targetElement[0].style.height = clientHeight - 88 + "px";
+  };
+
+  const initData = () => {
     
-    targetElement[0].style.height = (clientHeight-88)+"px";
+    if(cacheStore(slider)||cacheStore(discList)) return
 
-  }
+    const p1 = props.getRecommendList();
+    const p2 = props.getDiscList();
+
+    Promise.all([p1, p2])
+      .then(function (posts) {
+        calcClient();
+        initSwiper();
+      })
+      .catch(function (reason) {
+        console.log(reason);
+      });
+  };
 
   useEffect(() => {
-    !cacheStore(slider) && props.getRecommendList();
-    !cacheStore(discList) && props.getDiscList();
+    initData();
+    // !cacheStore(slider) && props.getRecommendList();
+    // !cacheStore(discList) && props.getDiscList();
   }, []);
-
-  useEffect(() => {
-    calcClient();
-    discList.length && initSwiper();
-  }, [discList.length]);
 
   return (
     <div className="swiper-wrap">
@@ -95,10 +107,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     getRecommendList() {
-      dispatch(actionCreators.getRecommendList());
+      return dispatch(actionCreators.getRecommendList());
     },
     getDiscList() {
-      dispatch(actionCreators.getDiscList());
+      return dispatch(actionCreators.getDiscList());
     },
   };
 };
