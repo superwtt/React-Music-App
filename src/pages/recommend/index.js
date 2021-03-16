@@ -1,45 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import Conditional from '@/common/component/keepAlive';
+import { Conditional } from "@/common/component/keepAlive";
 import Slider from "@/common/component/slider";
 import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
 const Recommend = (props) => {
 
-  const { slider,discList } = props;
+  const [shouldHide,setShouldHide] = useState(false);
+
+  const { slider, discList } = props;
 
   useEffect(() => {
     props.getRecommendList();
     props.getDiscList();
   }, []);
 
-
   return (
     <div className="recommend">
-      <Slider slider={slider} />
+      <Conditional active={!shouldHide}>
+        <Slider slider={slider} />
+      </Conditional>
       <div className="recommendList">
         <h1 className="listTitle">热门歌单推荐</h1>
         <ul>
-          {discList&&discList.map((item) => {
-            return (
-              <li className="item" key={item.dissid}>
-                <div className="icon">
-                  <img
-                    width="60"
-                    height="60"
-                    src={item.imgurl}
-                    alt=""
-                  />
-                </div>
-                <div className="text">
-                  <h2 className="name">{item.creator.name}</h2>
-                  <p className="desc">{item.dissname}</p>
-                </div>
-              </li>
-            );
-          })}
+          {discList &&
+            discList.map((item) => {
+              return (
+                <li className="item" key={item.dissid}>
+                  <div className="icon">
+                    <img width="60" height="60" src={item.imgurl} alt="" />
+                  </div>
+                  <div className="text">
+                    <h2 className="name">{item.creator.name}</h2>
+                    <p className="desc">{item.dissname}</p>
+                  </div>
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>
@@ -49,7 +48,7 @@ const Recommend = (props) => {
 // state是状态树
 const mapStateToProps = (state) => ({
   slider: state.recommendReducer.slider,
-  discList: state.recommendReducer.discList
+  discList: state.recommendReducer.discList,
 });
 
 // dispatch(action) 方法更新state
