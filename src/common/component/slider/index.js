@@ -20,7 +20,7 @@ const Slider = (props) => {
   }, [slider]);
 
   return (
-    <div className="swiper-container">
+    <div className="swiper-container" style={{height: "150px"}}>
       <div className="swiper-wrapper">
         {slider.map((item) => {
           return (
