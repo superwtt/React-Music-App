@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
+import Conditional from '@/common/component/keepAlive';
 import Slider from "@/common/component/slider";
 import * as actionCreators from "./store/actionCreators";
 import "./index.less";
