@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import * as actionCreators from "./store/actionCreators";
 
-const Singer = () => {
-  return <div>Singer page</div>;
+import "./index.less";
+
+const Singer = (props) => {
+
+  useEffect(() => {
+    props.getSingerList();
+  }, []);
+
+  return <div className="singer">Singer page</div>;
 };
 
-export default Singer;
+const mapStateToProps = (state) => ({
+  singers: state.singerReducer.singers,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getSingerList(){
+      dispatch(actionCreators.getSingerList())
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Singer);

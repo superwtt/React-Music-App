@@ -1,0 +1,1 @@
+export const GET_SINGER_LIST = "singer/GET_SINGER_LIST";
