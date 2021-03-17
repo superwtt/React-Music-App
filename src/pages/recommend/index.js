@@ -1,15 +1,14 @@
-import React, { useEffect,useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 import Scroll from "@/common/component/scroll";
 import Slider from "@/common/component/slider";
+import Loading from "@/common/component/loading";
+import defaultPng from "@/common/assets/default.png";
 import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
 const Recommend = (props) => {
-
-  const scroll = useRef(null);
-
   const { slider, discList } = props;
 
   const cacheStore = (arr) => {
@@ -26,9 +25,7 @@ const Recommend = (props) => {
     const p2 = props.getDiscList();
 
     Promise.all([p1, p2])
-      .then(function (posts) {
-        
-      })
+      .then(function (posts) {})
       .catch(function (reason) {
         console.log(reason);
       });
@@ -64,6 +61,11 @@ const Recommend = (props) => {
           </div>
         </div>
       </Scroll>
+      {discList.length <= 0 && (
+        <div className="loadingContainer">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 };
