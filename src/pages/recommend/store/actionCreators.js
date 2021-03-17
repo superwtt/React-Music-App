@@ -1,7 +1,6 @@
 import * as constants from "./actionTypes";
 import * as RecommendServices from "@/services/recommend";
 import { ERR_OK } from "@/services/config";
-import resolve from "resolve";
 
 export const getRecommendList = () => {
   return (dispatch) => {

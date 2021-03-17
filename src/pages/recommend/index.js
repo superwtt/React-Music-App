@@ -6,8 +6,6 @@ import Slider from "@/common/component/slider";
 import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
-const COUNT = 0;
-
 const Recommend = (props) => {
   const { slider, discList } = props;
 
@@ -37,7 +35,7 @@ const Recommend = (props) => {
   };
 
   const initData = () => {
-    
+
     if(cacheStore(slider)||cacheStore(discList)) return
 
     const p1 = props.getRecommendList();
