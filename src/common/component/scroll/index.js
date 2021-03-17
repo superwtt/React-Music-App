@@ -10,8 +10,8 @@ const Scroll = (props) => {
   const _initScroll = () => {
     if (!wrapperRef.current) return;
     const sc = new BScroll(wrapperRef.current, {
-      probeType: props.probeType,
-      click: props.click,
+      probeType: 1,
+      click: true,
     });
     setScroll(sc);
   };
@@ -32,11 +32,16 @@ const Scroll = (props) => {
     }, 20);
   }, 20);
 
+  // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
   useEffect(() => {
     refresh();
-  }, [props.data]);
+  }, [props.data.length]);
 
-  return <div ref={wrapperRef}>{props.children}</div>;
+  useEffect(() => {
+    refresh();
+  }, [props.slider.length]);
+
+  return <div className="recommendContent" ref={wrapperRef}>{props.children}</div>;
 };
 
 Scroll.defaultProps = {
@@ -46,9 +51,9 @@ Scroll.defaultProps = {
 };
 
 Scroll.propTypes = {
-  propType: PropTypes.Number,
-  click: PropTypes.Boolean,
-  data: PropTypes.Array,
+  propType: PropTypes.number,
+  click: PropTypes.bool,
+  data: PropTypes.array,
 };
 
 export default Scroll;
