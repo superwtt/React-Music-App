@@ -39,7 +39,7 @@ const Scroll = (props) => {
 
   useEffect(() => {
     refresh();
-  }, [props.slider.length]);
+  }, [props.slider&&props.slider.length]);
 
   return <div className="recommendContent" ref={wrapperRef}>{props.children}</div>;
 };

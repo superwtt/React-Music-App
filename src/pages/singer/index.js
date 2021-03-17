@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
+import ListView from "@/common/component/listView";
 import SingerJS from "@/common/js/singer";
 import * as actionCreators from "./store/actionCreators";
 
@@ -10,6 +11,9 @@ const HOT_NAME = "热门";
 const HOT_SINGER_LEN = 10;
 
 const Singer = (props) => {
+
+  const [singers,setSingers] = useState([])
+
   const _normalizeSinger = (list) => {
     let map = {
       hot: {
@@ -57,11 +61,15 @@ const Singer = (props) => {
 
   useEffect(() => {
     props.getSingerList().then((res) => {
-      console.log(_normalizeSinger(res.data.list));
+      const list = _normalizeSinger(res.data.list);
+      console.log(list)
+      setSingers(list);
     });
   }, []);
 
-  return <div className="singer">Singer page</div>;
+  return <div className="singer">
+    <ListView data={singers}></ListView>
+  </div>;
 };
 
 const mapStateToProps = (state) => ({
