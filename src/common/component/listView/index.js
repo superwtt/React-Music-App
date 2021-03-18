@@ -4,11 +4,21 @@ import { getData } from "@/common/js/dom";
 import Scroll from "../scroll/index";
 import "./index.less";
 
+const ANCHOR_HEIGHT = 18;
+
+const touch = {
+  y1: 0,
+  y2: 0,
+  anchorIndex: 0,
+};
+
 const ListView = (props) => {
   const [shortcutList, setShortcutList] = useState([]);
+  const [listenScroll, setListenScroll] = useState(true);
+  const [scrollY, setScrollY] = useState(-1);
+  const [listHeight, setListHeight] = useState([]);
 
   const listView = useRef(null);
-  const listGroup = useRef(null);
 
   const { data } = props;
 
@@ -18,24 +28,68 @@ const ListView = (props) => {
     });
   }, [data.length]);
 
+  const _scrollTo = (anchorIndex) => {
+    const listGroups = document.getElementsByClassName("listGroup");
+    listView.current.scrollToElement(listGroups[anchorIndex], 0);
+  };
+
   const onShortcutTouchStart = (e) => {
     let anchorIndex = getData(e.target, "index");
-    const listGroups = document.getElementsByClassName("listGroup");
     let firstTouch = e.touches[0];
-    console.log(listGroup)
-    listView.current.scrollToElement(listGroups[anchorIndex],0)
+    touch.y1 = firstTouch.pageY;
+    touch.anchorIndex = anchorIndex;
+    _scrollTo(anchorIndex);
+  };
+
+  const onShortcutTouchMove = (e) => {
+    e.stopPropagation(); // 阻止事件冒泡
+
+    let firstTouch = e.touches[0];
+    touch.y2 = firstTouch.pageY;
+    let delta = ((touch.y2 - touch.y1) / ANCHOR_HEIGHT) | 0;
+    let anchorIndex = Number(touch.anchorIndex) + delta;
+    _scrollTo(anchorIndex);
+  };
+
+  const scroll = (pos) => {
+    console.log(pos);
+    setScrollY(pos.y);
+  };
+
+  const _calculateHeight = () => {
+    setListHeight([]);
+
+    const listH = [];
+
+    const listGroups = document.getElementsByClassName("listGroup");
+    let height = 0;
+    listH.push(height);
+    for (let i = 0; i < listGroups.length; i++) {
+      let item = listGroups[i];
+      height += item.clientHeight;
+      listHeight.push(height);
+    }
+    console.log(listH)
+    setListHeight(listH);
   };
 
   useEffect(() => {
     setShortcutList(calShortcutList);
+    _calculateHeight();
   }, [data.length]);
 
   return (
-    <Scroll data={data} ref={listView}>
+    <Scroll
+      data={data}
+      ref={listView}
+      listenScroll={listenScroll}
+      probeType={3}
+      scroll={scroll}
+    >
       <ul>
         {data.map((item) => {
           return (
-            <li className="listGroup" key={item.id} >
+            <li className="listGroup" key={item.id}>
               <h2 className="listGroupTitle">{item.title}</h2>
               <ul>
                 {item.items.map((it) => {
@@ -51,7 +105,11 @@ const ListView = (props) => {
           );
         })}
       </ul>
-      <div className="listShortcut" onTouchStart={onShortcutTouchStart}>
+      <div
+        className="listShortcut"
+        onTouchStart={onShortcutTouchStart}
+        onTouchMove={onShortcutTouchMove}
+      >
         <ul>
           {shortcutList.map((item, index) => {
             return (

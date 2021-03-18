@@ -16,10 +16,17 @@ const Scroll = (props, ref) => {
   const _initScroll = () => {
     if (!wrapperRef.current) return;
     const sc = new BScroll(wrapperRef.current, {
-      probeType: 1,
-      click: true,
+      probeType:props.probeType,
+      click:props.click,
     });
     setScroll(sc);
+
+    if(props.listenScroll){
+      scroll&&scroll.on('scroll',(pos)=>{
+        props.scroll(pos)
+      })
+    }
+
   };
 
   const enable = () => {
@@ -57,10 +64,6 @@ const Scroll = (props, ref) => {
     refresh();
   }, [props.data.length]);
 
-  useEffect(() => {
-    refresh();
-  }, [props.slider && props.slider.length]);
-
   return (
     <div className="recommendContent" ref={wrapperRef}>
       {props.children}
@@ -72,12 +75,14 @@ Scroll.defaultProps = {
   propType: 1,
   click: true,
   data: null,
+  listenScroll:false
 };
 
 Scroll.propTypes = {
   propType: PropTypes.number,
   click: PropTypes.bool,
   data: PropTypes.array,
+  listenScroll: PropTypes.bool
 };
 
 export default forwardRef(Scroll);

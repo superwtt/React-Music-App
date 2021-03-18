@@ -11,6 +11,8 @@ import "./index.less";
 const Recommend = (props) => {
   const { slider, discList } = props;
 
+  const recommendContent = useRef(null);
+
   const cacheStore = (arr) => {
     if (arr.length) {
       return true;
@@ -25,7 +27,9 @@ const Recommend = (props) => {
     const p2 = props.getDiscList();
 
     Promise.all([p1, p2])
-      .then(function (posts) {})
+      .then(function (posts) {
+        recommendContent.current.refresh()
+      })
       .catch(function (reason) {
         console.log(reason);
       });
@@ -37,7 +41,7 @@ const Recommend = (props) => {
 
   return (
     <div className="recommend">
-      <Scroll slider={slider} data={discList}>
+      <Scroll slider={slider} data={discList} ref={recommendContent} >
         <div>
           <Slider slider={slider} />
           <div className="recommendList">
