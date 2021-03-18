@@ -62,7 +62,6 @@ const Singer = (props) => {
   useEffect(() => {
     props.getSingerList().then((res) => {
       const list = _normalizeSinger(res.data.list);
-      console.log(list)
       setSingers(list);
     });
   }, []);

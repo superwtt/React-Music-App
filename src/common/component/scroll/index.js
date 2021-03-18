@@ -1,8 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import PropTypes from "prop-types";
 import BScroll from "better-scroll";
 
-const Scroll = (props) => {
+const Scroll = (props, ref) => {
   const [scroll, setScroll] = useState(null);
 
   const wrapperRef = useRef(null);
@@ -25,6 +31,20 @@ const Scroll = (props) => {
   const refresh = () => {
     scroll && scroll.refresh();
   };
+  const scrollTo = function() {
+    scroll && scroll.scrollTo.apply(scroll, arguments);
+  };
+  const scrollToElement = function() {
+    scroll && scroll.scrollToElement.apply(scroll, arguments);
+  };
+
+  useImperativeHandle(ref, () => ({
+    enable,
+    disable,
+    refresh,
+    scrollTo,
+    scrollToElement,
+  }));
 
   useEffect(() => {
     setTimeout(() => {
@@ -39,9 +59,13 @@ const Scroll = (props) => {
 
   useEffect(() => {
     refresh();
-  }, [props.slider&&props.slider.length]);
+  }, [props.slider && props.slider.length]);
 
-  return <div className="recommendContent" ref={wrapperRef}>{props.children}</div>;
+  return (
+    <div className="recommendContent" ref={wrapperRef}>
+      {props.children}
+    </div>
+  );
 };
 
 Scroll.defaultProps = {
@@ -56,4 +80,4 @@ Scroll.propTypes = {
   data: PropTypes.array,
 };
 
-export default Scroll;
+export default forwardRef(Scroll);
