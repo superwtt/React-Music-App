@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Scroll from "../scroll/index";
 import "./index.less";
 
 const ListView = (props) => {
+  const [shortcutList, setShortcutList] = useState([]);
+
   const { data } = props;
 
-  console.log(data);
+  const calShortcutList = useMemo(() => {
+    return data.map((group) => {
+      return group.title.substr(0, 1);
+    });
+  }, [data.length]);
+
+  useEffect(() => {
+    setShortcutList(calShortcutList);
+    console.log(calShortcutList);
+  }, [data.length]);
 
   return (
     <Scroll data={data}>
@@ -28,6 +39,13 @@ const ListView = (props) => {
           );
         })}
       </ul>
+      <div className="listShortcut">
+        <ul>
+          {shortcutList.map((item, index) => {
+            return <li className="item">{item}</li>;
+          })}
+        </ul>
+      </div>
     </Scroll>
   );
 };
