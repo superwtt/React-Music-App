@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import Loading from "@/common/component/loading";
 import { getData } from "@/common/js/dom";
 import Scroll from "../scroll/index";
 import "./index.less";
 
 const ANCHOR_HEIGHT = 18;
+const TITLE_HEIGHT = 30;
 
 const touch = {
   y1: 0,
@@ -18,6 +20,8 @@ const ListView = (props) => {
   const [scrollY, setScrollY] = useState(-1);
   const [listHeight, setListHeight] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [fixedTitle, setFixedTitle] = useState("");
+  const [diff, setDiff] = useState(-1);
 
   const listView = useRef(null);
 
@@ -30,6 +34,15 @@ const ListView = (props) => {
   }, [data.length]);
 
   const _scrollTo = (anchorIndex) => {
+    if (!anchorIndex && anchorIndex !== 0)
+      // 最顶部和最底部UI美化部分，点击应该是无效的
+      return;
+    if (anchorIndex < 0) {
+      anchorIndex = 0;
+    } else if (anchorIndex > listHeight.length - 2) {
+      anchorIndex = listHeight.length - 2; // listHeight计算出来是24个，实际数据只有23个，数组索引还要再减去1
+    }
+    setScrollY(-listHeight[anchorIndex]); // 点击的时候获取位置，高亮右侧字母
     const listGroups = document.getElementsByClassName("listGroup");
     listView.current.scrollToElement(listGroups[anchorIndex], 0);
   };
@@ -72,23 +85,48 @@ const ListView = (props) => {
     setListHeight(listH);
   };
 
+  const _calculateFixedTitle = () => {
+    if (scrollY > 0) {
+      return "";
+    }
+    return data[currentIndex] ? data[currentIndex].title : "";
+  };
+
   useEffect(() => {
     setShortcutList(calShortcutList);
     _calculateHeight();
   }, [data.length]);
 
   useEffect(() => {
-    console.log(scrollY)
-    for (let i = 0; i < listHeight.length; i++) {
+    // 监测滚动设置顶部的值
+    setFixedTitle(_calculateFixedTitle());
+
+    // 当滚动到顶部，scrollY>0
+    if (scrollY > 0) {
+      setCurrentIndex(0);
+      return;
+    }
+
+    // 在中间部分滚动
+    for (let i = 0; i < listHeight.length - 1; i++) {
       let h1 = listHeight[i];
       let h2 = listHeight[i + 1];
-      if (!h2 || (-scrollY > h1 && -scrollY < h2)) {
+      if (-scrollY >= h1 && -scrollY < h2) {
         setCurrentIndex(i);
+        setDiff(h2 + scrollY); // 实际上是减去scrollY,scrollY是负值
         return;
       }
-      setCurrentIndex(0);
+      // 滚动到底部，且-scrollY大于最后一个元素上限
+      setCurrentIndex(listHeight.length - 2);
     }
   }, [scrollY]);
+
+  useEffect(() => {
+    let fixedTop = diff > 0 && diff < TITLE_HEIGHT ? diff - TITLE_HEIGHT : 0;
+    const dom = document.getElementsByClassName("listFixed");
+    if (!dom.length) return;
+    dom[0].style.transform = `translate3d(0,${fixedTop}px,0)`;
+  }, [diff]);
 
   return (
     <Scroll
@@ -99,12 +137,12 @@ const ListView = (props) => {
       scroll={scroll}
     >
       <ul>
-        {data.map((item,index) => {
+        {data.map((item, index) => {
           return (
             <li className="listGroup" key={index}>
               <h2 className="listGroupTitle">{item.title}</h2>
               <ul>
-                {item.items.map((it,idx) => {
+                {item.items.map((it, idx) => {
                   return (
                     <li className="listGroupItem" key={idx}>
                       <img className="avatar" src={it.avatar} />
@@ -126,7 +164,7 @@ const ListView = (props) => {
           {shortcutList.map((item, index) => {
             return (
               <li
-                className={`item ${currentIndex === index?'current':''}`}
+                className={`item ${currentIndex === index ? "current" : ""}`}
                 data-index={index}
                 key={index}
               >
@@ -136,6 +174,16 @@ const ListView = (props) => {
           })}
         </ul>
       </div>
+      {fixedTitle && (
+        <div className="listFixed">
+          <div className="fixedTitle">{fixedTitle}</div>
+        </div>
+      )}
+      {data.length <= 0 && (
+        <div className="loadingContainer">
+          <Loading />
+        </div>
+      )}
     </Scroll>
   );
 };

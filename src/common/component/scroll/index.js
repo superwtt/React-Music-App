@@ -13,6 +13,14 @@ const Scroll = forwardRef((props, ref) => {
 
   const wrapperRef = useRef(null);
 
+  const bindScroll = ()=>{
+    if(props.listenScroll){
+      scroll&&scroll.on('scroll',(pos)=>{
+        props.scroll(pos)
+      })
+    }
+  }
+
   const _initScroll = () => {
     if (!wrapperRef.current) return;
 
@@ -21,6 +29,7 @@ const Scroll = forwardRef((props, ref) => {
       click:props.click,
     });
     setScroll(sc);
+    bindScroll();
   };
 
   const enable = () => {
@@ -31,6 +40,7 @@ const Scroll = forwardRef((props, ref) => {
   };
   const refresh = () => {
     scroll && scroll.refresh();
+    bindScroll();
   };
   const scrollTo = function() {
     scroll && scroll.scrollTo.apply(scroll, arguments);
@@ -54,11 +64,7 @@ const Scroll = forwardRef((props, ref) => {
   },[]);
 
   useEffect(()=>{
-    if(props.listenScroll){
-      scroll&&scroll.on('scroll',(pos)=>{
-        props.scroll(pos)
-      })
-    }
+    refresh()
   },[props.data.length])
 
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
