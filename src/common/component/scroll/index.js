@@ -8,25 +8,19 @@ import React, {
 import PropTypes from "prop-types";
 import BScroll from "better-scroll";
 
-const Scroll = (props, ref) => {
+const Scroll = forwardRef((props, ref) => {
   const [scroll, setScroll] = useState(null);
 
   const wrapperRef = useRef(null);
 
   const _initScroll = () => {
     if (!wrapperRef.current) return;
+
     const sc = new BScroll(wrapperRef.current, {
       probeType:props.probeType,
       click:props.click,
     });
     setScroll(sc);
-
-    if(props.listenScroll){
-      scroll&&scroll.on('scroll',(pos)=>{
-        props.scroll(pos)
-      })
-    }
-
   };
 
   const enable = () => {
@@ -57,7 +51,15 @@ const Scroll = (props, ref) => {
     setTimeout(() => {
       _initScroll();
     }, 20);
-  }, 20);
+  },[]);
+
+  useEffect(()=>{
+    if(props.listenScroll){
+      scroll&&scroll.on('scroll',(pos)=>{
+        props.scroll(pos)
+      })
+    }
+  },[props.data.length])
 
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
   useEffect(() => {
@@ -69,6 +71,15 @@ const Scroll = (props, ref) => {
       {props.children}
     </div>
   );
+});
+
+Scroll.displayName = 'Scroll';
+
+Scroll.propTypes = {
+  propType: PropTypes.number,
+  click: PropTypes.bool,
+  data: PropTypes.array,
+  listenScroll: PropTypes.bool
 };
 
 Scroll.defaultProps = {
@@ -78,11 +89,5 @@ Scroll.defaultProps = {
   listenScroll:false
 };
 
-Scroll.propTypes = {
-  propType: PropTypes.number,
-  click: PropTypes.bool,
-  data: PropTypes.array,
-  listenScroll: PropTypes.bool
-};
 
-export default forwardRef(Scroll);
+export default Scroll;

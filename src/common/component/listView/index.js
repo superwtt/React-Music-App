@@ -17,6 +17,7 @@ const ListView = (props) => {
   const [listenScroll, setListenScroll] = useState(true);
   const [scrollY, setScrollY] = useState(-1);
   const [listHeight, setListHeight] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const listView = useRef(null);
 
@@ -52,7 +53,6 @@ const ListView = (props) => {
   };
 
   const scroll = (pos) => {
-    console.log(pos);
     setScrollY(pos.y);
   };
 
@@ -67,9 +67,8 @@ const ListView = (props) => {
     for (let i = 0; i < listGroups.length; i++) {
       let item = listGroups[i];
       height += item.clientHeight;
-      listHeight.push(height);
+      listH.push(height);
     }
-    console.log(listH)
     setListHeight(listH);
   };
 
@@ -77,6 +76,19 @@ const ListView = (props) => {
     setShortcutList(calShortcutList);
     _calculateHeight();
   }, [data.length]);
+
+  useEffect(() => {
+    console.log(scrollY)
+    for (let i = 0; i < listHeight.length; i++) {
+      let h1 = listHeight[i];
+      let h2 = listHeight[i + 1];
+      if (!h2 || (-scrollY > h1 && -scrollY < h2)) {
+        setCurrentIndex(i);
+        return;
+      }
+      setCurrentIndex(0);
+    }
+  }, [scrollY]);
 
   return (
     <Scroll
@@ -87,14 +99,14 @@ const ListView = (props) => {
       scroll={scroll}
     >
       <ul>
-        {data.map((item) => {
+        {data.map((item,index) => {
           return (
-            <li className="listGroup" key={item.id}>
+            <li className="listGroup" key={index}>
               <h2 className="listGroupTitle">{item.title}</h2>
               <ul>
-                {item.items.map((it) => {
+                {item.items.map((it,idx) => {
                   return (
-                    <li className="listGroupItem">
+                    <li className="listGroupItem" key={idx}>
                       <img className="avatar" src={it.avatar} />
                       <span className="name">{it.name}</span>
                     </li>
@@ -113,7 +125,11 @@ const ListView = (props) => {
         <ul>
           {shortcutList.map((item, index) => {
             return (
-              <li className="item" data-index={index}>
+              <li
+                className={`item ${currentIndex === index?'current':''}`}
+                data-index={index}
+                key={index}
+              >
                 {item}
               </li>
             );
