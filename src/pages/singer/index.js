@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
+import SingerDetail from "@/pages/singerDetail";
 import ListView from "@/common/component/listView";
 import SingerJS from "@/common/js/singer";
 import * as actionCreators from "./store/actionCreators";
@@ -13,6 +14,7 @@ const HOT_SINGER_LEN = 10;
 const Singer = (props) => {
 
   const [singers,setSingers] = useState([])
+  const [showDetail,setShowDetail] = useState(false)
 
   const _normalizeSinger = (list) => {
     let map = {
@@ -61,11 +63,7 @@ const Singer = (props) => {
 
   const selectItem = (item)=>{
     console.log(item)
-    const {history} = props;
-    history.push({
-      pathname: `/singer/${item.id}`,
-      query:item.id
-    })
+    setShowDetail(true)
   }
 
   useEffect(() => {
@@ -77,6 +75,9 @@ const Singer = (props) => {
 
   return <div className="singer">
     <ListView selectItem={selectItem} data={singers}></ListView>
+    {
+      showDetail&&<SingerDetail />
+    }
   </div>;
 };
 

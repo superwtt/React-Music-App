@@ -10,8 +10,6 @@ const SingerDetail = (props) => {
     setNumber(Math.random());
   },[]);
 
-  console.log(props.location.pathname);
-
   return (
     <TransitionGroup>
       <CSSTransition key={number} timeout={10000} classNames="app2">

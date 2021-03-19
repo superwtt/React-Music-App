@@ -5,7 +5,6 @@ import Recommend from "../pages/recommend";
 import Singer from "../pages/singer";
 import Rank from "../pages/rank";
 import Search from "../pages/search";
-import SingerDetail from "../pages/singerDetail";
 
 // const routes = [
 //   {
@@ -32,7 +31,7 @@ const RouterConfig = () => {
       <Switch>
         <Route path="/recommend" component={Recommend} />
         <Route exact path='/singer' component={Singer}/>
-        <Route path="/singer/:id" component={SingerDetail} />
+        {/* <Route path="/singer/:id" component={SingerDetail} /> */}
         <Route path="/rank" component={Rank} />
         <Route path="/search" component={Search} />
         <Redirect from="/" to="/recommend" />
