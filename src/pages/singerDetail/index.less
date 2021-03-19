@@ -1,11 +1,37 @@
 @import "../../common/style/variable.less";
 
-.singerDetail{
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: @color-background;
+.singerDetail {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: @color-background;
+}
+.app2-enter {
+  /*初始透明度为0*/
+  opacity: 0;
+  /*初始偏移量为100%*/
+  transform: translateX(100%);
+}
+
+.app2-enter-active {
+  /*随后透明度为1*/
+  opacity: 1;
+  /*随后偏移量回归原位*/
+  transform: translateX(0);
+  /*这个移动过程我们做个动画，动画持续时长500毫秒*/
+  transition: all 500ms ease;
+}
+
+.app2-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.app2-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 500ms ease;
 }
