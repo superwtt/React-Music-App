@@ -12,10 +12,8 @@ export default class RouterConfig extends React.Component {
       <HashRouter forceRefresh={true}>
         <Switch>
           <Route path="/recommend" component={Recommend} />
-          <Switch>
-            <Route exact path="/singer" component={Singer}/>
-            <Route path="/singer:id" component={SingerDetail} />
-          </Switch>
+          <Route exact path="/singer" component={Singer}/>
+          <Route path="/singer/:id" component={SingerDetail} />
           <Route path="/rank" component={Rank} />
           <Route path="/search" component={Search} />
           <Redirect from="/" to="/recommend" />
