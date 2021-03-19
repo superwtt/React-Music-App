@@ -41,7 +41,7 @@ const Recommend = (props) => {
 
   return (
     <div className="recommend">
-      <Scroll slider={slider} data={discList} ref={recommendContent} >
+      <Scroll slider={slider} data={discList} classVal = {"recommendContent"} ref={recommendContent} >
         <div>
           <Slider slider={slider} />
           <div className="recommendList">

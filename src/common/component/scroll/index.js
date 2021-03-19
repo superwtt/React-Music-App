@@ -8,8 +8,11 @@ import React, {
 import PropTypes from "prop-types";
 import BScroll from "better-scroll";
 
+import './index.less';
+
+let scroll = null;
+
 const Scroll = forwardRef((props, ref) => {
-  const [scroll, setScroll] = useState(null);
 
   const wrapperRef = useRef(null);
 
@@ -28,7 +31,7 @@ const Scroll = forwardRef((props, ref) => {
       probeType:props.probeType,
       click:props.click,
     });
-    setScroll(sc);
+    scroll=sc;
     bindScroll();
   };
 
@@ -54,7 +57,7 @@ const Scroll = forwardRef((props, ref) => {
     disable,
     refresh,
     scrollTo,
-    scrollToElement,
+    scrollToElement
   }));
 
   useEffect(() => {
@@ -63,17 +66,13 @@ const Scroll = forwardRef((props, ref) => {
     }, 20);
   },[]);
 
-  useEffect(()=>{
-    refresh()
-  },[props.data.length])
-
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
   useEffect(() => {
     refresh();
   }, [props.data.length]);
 
   return (
-    <div className="recommendContent" ref={wrapperRef}>
+    <div className={props.classVal} ref={wrapperRef}>
       {props.children}
     </div>
   );

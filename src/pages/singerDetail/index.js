@@ -29,7 +29,6 @@ const SingerDetail = (props) => {
     setNumber(1);
     getSingerDetail(props.singer.id).then((res) => {
       if (res.code === ERR_OK) {
-        console.log(res)  
         processSongsUrl(_normalizeSongs(res.data.list)).then((songs) => {
           setSongs(songs);
         });
@@ -39,7 +38,7 @@ const SingerDetail = (props) => {
 
   return (
     <TransitionGroup>
-      <CSSTransition key={number} timeout={10000} classNames="app2">
+      <CSSTransition key={number} timeout={500} classNames="app2">
         <MusicList songs={songs} bgImage={props.singer.avatar} title={props.singer.name} />
       </CSSTransition>
     </TransitionGroup>

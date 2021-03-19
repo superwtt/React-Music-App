@@ -102,6 +102,7 @@ const ListView = (props) => {
   }, [data.length]);
 
   useEffect(() => {
+
     // 监测滚动设置顶部的值
     setFixedTitle(_calculateFixedTitle());
 
@@ -134,6 +135,7 @@ const ListView = (props) => {
 
   return (
     <Scroll
+      classVal = {"recommendContent"}
       data={data}
       ref={listView}
       listenScroll={listenScroll}
