@@ -59,6 +59,15 @@ const Singer = (props) => {
     return hot.concat(ret)
   };
 
+  const selectItem = (item)=>{
+    console.log(item)
+    const {history} = props;
+    history.push({
+      pathname: `/singer/${item.id}`,
+      query:item.id
+    })
+  }
+
   useEffect(() => {
     props.getSingerList().then((res) => {
       const list = _normalizeSinger(res.data.list);
@@ -67,7 +76,7 @@ const Singer = (props) => {
   }, []);
 
   return <div className="singer">
-    <ListView data={singers}></ListView>
+    <ListView selectItem={selectItem} data={singers}></ListView>
   </div>;
 };
 

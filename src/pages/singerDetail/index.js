@@ -1,5 +1,5 @@
 import React from "react";
-import "../index.less";
+import "./index.less";
 
 const SingerDetail = ()=>{
     return <div className="singerDetail"></div>

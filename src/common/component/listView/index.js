@@ -92,6 +92,10 @@ const ListView = (props) => {
     return data[currentIndex] ? data[currentIndex].title : "";
   };
 
+  const selectItem = (item)=>{
+    props.selectItem(item)
+  }
+
   useEffect(() => {
     setShortcutList(calShortcutList);
     _calculateHeight();
@@ -144,7 +148,7 @@ const ListView = (props) => {
               <ul>
                 {item.items.map((it, idx) => {
                   return (
-                    <li className="listGroupItem" key={idx}>
+                    <li className="listGroupItem" key={idx} onClick={()=>selectItem(it)}>
                       <img className="avatar" src={it.avatar} />
                       <span className="name">{it.name}</span>
                     </li>

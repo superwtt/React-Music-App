@@ -4,6 +4,7 @@ import Recommend from "../pages/recommend";
 import Singer from "../pages/singer";
 import Rank from "../pages/rank";
 import Search from "../pages/search";
+import SingerDetail from "../pages/singerDetail";
 
 export default class RouterConfig extends React.Component {
   render() {
@@ -11,7 +12,10 @@ export default class RouterConfig extends React.Component {
       <HashRouter forceRefresh={true}>
         <Switch>
           <Route path="/recommend" component={Recommend} />
-          <Route path="/singer" component={Singer} />
+          <Switch>
+            <Route exact path="/singer" component={Singer}/>
+            <Route path="/singer:id" component={SingerDetail} />
+          </Switch>
           <Route path="/rank" component={Rank} />
           <Route path="/search" component={Search} />
           <Redirect from="/" to="/recommend" />
