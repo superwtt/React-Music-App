@@ -4,16 +4,17 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "./index.less";
 
 const SingerDetail = (props) => {
+  const [number, setNumber] = useState(0);
 
-    console.log(props.location.pathname)
-  
+  useEffect(() => {
+    setNumber(Math.random());
+  },[]);
+
+  console.log(props.location.pathname);
+
   return (
     <TransitionGroup>
-      <CSSTransition
-        key={props.location.pathname}
-        timeout={10000}
-        classNames="app2"
-      >
+      <CSSTransition key={number} timeout={10000} classNames="app2">
         <div className="singerDetail">1</div>
       </CSSTransition>
     </TransitionGroup>

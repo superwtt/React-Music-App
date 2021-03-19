@@ -11,7 +11,7 @@
 }
 .app2-enter {
   /*初始透明度为0*/
-  opacity: 0;
+  opacity: 1;
   /*初始偏移量为100%*/
   transform: translateX(100%);
 }
@@ -22,16 +22,16 @@
   /*随后偏移量回归原位*/
   transform: translateX(0);
   /*这个移动过程我们做个动画，动画持续时长500毫秒*/
-  transition: all 500ms ease;
+  transition: all 1000ms ease;
 }
 
 .app2-exit {
-  opacity: 1;
+  opacity: 0;
   transform: translateX(0);
 }
 
 .app2-exit-active {
   opacity: 0;
   transform: translateX(-100%);
-  transition: all 500ms ease;
+  transition: all 1000ms ease;
 }

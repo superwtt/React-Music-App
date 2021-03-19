@@ -61,6 +61,7 @@
     "react-bscroll": "^1.0.7",
     "react-dev-utils": "^11.0.2",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-keep-alive": "^2.5.2",
     "react-redux": "^7.2.2",
     "react-refresh": "^0.8.3",
@@ -107,8 +108,7 @@
     ]
   },
   "devDependencies": {
-    "less-loader": "^5.0.0",
-    "react-router-dom": "^5.2.0"
+    "less-loader": "^5.0.0"
   },
   "jest": {
     "roots": [

@@ -7,12 +7,31 @@ import Rank from "../pages/rank";
 import Search from "../pages/search";
 import SingerDetail from "../pages/singerDetail";
 
+// const routes = [
+//   {
+//     path:'/recommend',
+//     component:Recommend,
+//   },
+//   {
+//     path:'/singer',
+//     component:Singer,
+//   },
+//   {
+//     path:'/rank',
+//     component:Rank,
+//   },
+//   {
+//     path:'/search',
+//     component:Search,
+//   }
+// ]
+
 const RouterConfig = () => {
   return (
     <HashRouter forceRefresh={true}>
       <Switch>
         <Route path="/recommend" component={Recommend} />
-        <Route exact path="/singer" component={Singer} />
+        <Route exact path='/singer' component={Singer}/>
         <Route path="/singer/:id" component={SingerDetail} />
         <Route path="/rank" component={Rank} />
         <Route path="/search" component={Search} />
