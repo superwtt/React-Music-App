@@ -91,12 +91,14 @@ const MusicList = (props) => {
         className="bgImage"
         style={{ backgroundImage: "url(" + props.bgImage + ")" }}
       >
-        <div className="playWrapper">
+        {
+          songs.length>0&&<div className="playWrapper">
           <div className="play">
             <i className="icon-play iconPlay"></i>
             <span className="text">随机播放全部</span>
           </div>
         </div>
+        }
         <div className="filter"></div>
       </div>
       <div className="bgLayer"></div>
