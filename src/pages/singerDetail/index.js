@@ -41,7 +41,7 @@ const SingerDetail = (props) => {
 
   return (
     // <TransitionGroup>
-      <CSSTransition in={number?true:false} timeout={10000} classNames="app2">
+      <CSSTransition in={number?true:false} timeout={300} classNames="app2">
         <MusicList
           hide={back}
           songs={songs}
