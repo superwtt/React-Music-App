@@ -14,7 +14,7 @@ const HOT_SINGER_LEN = 10;
 const Singer = (props) => {
 
   const [singers,setSingers] = useState([])
-  const [showDetail,setShowDetail] = useState(false);
+  const [showDetail,setShowDetail] = useState(0);
   const [singerTarget,setSingerTarget] = useState({});
 
   const _normalizeSinger = (list) => {
@@ -63,8 +63,14 @@ const Singer = (props) => {
   };
 
   const selectItem = (item)=>{
-    setShowDetail(true);
+    setShowDetail(1);
     setSingerTarget(item);
+  }
+
+  const hide = ()=>{
+    setTimeout(()=>{
+      setShowDetail(0);
+    },300)
   }
 
   useEffect(() => {
@@ -75,9 +81,9 @@ const Singer = (props) => {
   }, []);
 
   return <div className="singer">
-    <ListView selectItem={selectItem} data={singers}></ListView>
+    <ListView selectItem={selectItem} data={singers} />
     {
-      showDetail&&<SingerDetail singer={singerTarget} />
+      showDetail>0&&<SingerDetail showDetail={showDetail} singer={singerTarget} hide={hide} />
     }
   </div>;
 };
