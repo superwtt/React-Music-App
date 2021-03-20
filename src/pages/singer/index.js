@@ -70,7 +70,7 @@ const Singer = (props) => {
   const hide = ()=>{
     setTimeout(()=>{
       setShowDetail(0);
-    },301)
+    },300)
   }
 
   useEffect(() => {
