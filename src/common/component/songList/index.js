@@ -10,12 +10,16 @@ const SongList = (props) => {
     return `${song.singer}·${song.album}`
   }
 
+  const selectItem = (song,index)=>{
+    props.selectItem(song,index)
+  }
+
   return (
     <div className="songList">
       <ul>
-        {songs.map((item) => {
+        {songs.map((item,index) => {
           return (
-            <li className="item">
+            <li className="item" onClick={()=>selectItem(item,index)}>
               {/* <div className="rank">
                 <span></span>
                 </div> */}

@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import Loading from "@/common/component/loading";
 import Scroll from "@/common/component/scroll";
 import SongList from "@/common/component/songList";
 import { prefixStyle } from "@/common/js/dom";
 import "./index.less";
+
+import * as actionCreators from "../player/store/actionCreators";
 
 const RESERVED_HEIGHT = 40;
 let imageHeightGlobal = 0;
@@ -28,6 +31,15 @@ const MusicList = (props) => {
   const back = () => {
     setNum(0);
     props.hide();
+  };
+
+  const selectItem = (song, index) => {
+    // 点击播放某个歌曲 需要设置四个东西：
+    // 1.0 歌曲播放状态
+    // 2.0 全屏播放
+    // 3.0 歌曲播放列表
+    // 4.0 顺序播放列表
+    props.selectPlay({ songs, index });
   };
 
   useEffect(() => {
@@ -57,7 +69,6 @@ const MusicList = (props) => {
     const bgImage = document.getElementsByClassName("bgImage")[0];
     const filter = document.getElementsByClassName("filter")[0];
     const playBtn = document.getElementsByClassName("playBtn")[0];
-    
 
     bgLayer.style[transform] = `translate3d(0,${translateY}px,0)`;
 
@@ -72,15 +83,15 @@ const MusicList = (props) => {
       zIndex = 10;
       bgImage.style.paddingTop = 0;
       bgImage.style.height = `${RESERVED_HEIGHT}px`;
-      if(playBtn){
-        playBtn.style.display = 'none'
+      if (playBtn) {
+        playBtn.style.display = "none";
       }
     } else {
       zIndex = 0;
       bgImage.style.paddingTop = "70%";
       bgImage.style.height = `0px`;
-      if(playBtn){
-        playBtn.style.display = ''
+      if (playBtn) {
+        playBtn.style.display = "";
       }
     }
     // 下拉图片放大
@@ -128,7 +139,7 @@ const MusicList = (props) => {
         ref={musicList}
       >
         <div className="songListWrapper">
-          <SongList songs={songs} />
+          <SongList selectItem={selectItem} songs={songs} />
         </div>
         {songs.length <= 0 && (
           <div className="loadingContainer">
@@ -154,4 +165,14 @@ MusicList.propTypes = {
   rank: PropTypes.bool,
 };
 
-export default MusicList;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    selectPlay({ songs, index }) {
+      dispatch(actionCreators.selectPlay({ songs, index }));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MusicList);

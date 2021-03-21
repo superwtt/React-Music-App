@@ -4,7 +4,7 @@ import * as constants from "./actionTypes";
 const defaultState = {
   singer: {},
   playing: false, // 播放状态
-  fullScrenn: false, // 是否全屏
+  fullScreen: false, // 是否全屏
   playList: [], // 播放列表
   sequenceList: [], // 顺序列表
   mode: playMode.sequence, // 播放模式
@@ -18,7 +18,10 @@ export default (state = defaultState, action) => {
     case constants.SET_PLAYING_STATE:
       return { ...state, playing: action.value };
     case constants.SET_FULL_SCREEN:
-      return { ...state, fullScrenn: action.value };
+      return { ...state, fullScreen: action.value };
+    case constants.SET_PLAYLIST:
+      console.log(action.value)
+      return { ...state, playList: action.value };
     case constants.SET_SEQUENCE_LIST:
       return { ...state, sequenceList: action.value };
     case constants.SET_PLAY_MODE:
