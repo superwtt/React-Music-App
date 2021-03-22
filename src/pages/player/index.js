@@ -31,7 +31,7 @@ const Player = (props) => {
           {/* {fullScreen && ( */}
             <CSSTransition
               in={playNumber ? true : false}
-              timeout={20000}
+              timeout={400}
               classNames="normal"
             >
               <div className="normalPlayer">
