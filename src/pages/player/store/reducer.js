@@ -9,6 +9,7 @@ const defaultState = {
   sequenceList: [], // 顺序列表
   mode: playMode.sequence, // 播放模式
   currentIndex: -1, // 当前播放歌曲的索引
+  currentSong: {}, // 当前播放歌曲
 };
 
 export default (state = defaultState, action) => {
@@ -20,7 +21,6 @@ export default (state = defaultState, action) => {
     case constants.SET_FULL_SCREEN:
       return { ...state, fullScreen: action.value };
     case constants.SET_PLAYLIST:
-      console.log(action.value)
       return { ...state, playList: action.value };
     case constants.SET_SEQUENCE_LIST:
       return { ...state, sequenceList: action.value };
@@ -28,7 +28,8 @@ export default (state = defaultState, action) => {
       return { ...state, mode: action.value };
     case constants.SET_CURRENT_INDEX:
       return { ...state, currentIndex: action.value };
-
+    case constants.SET_CURRENT_SONG:
+      return { ...state, currentSong: action.value };
     default:
       return state;
   }

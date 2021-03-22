@@ -22,5 +22,18 @@ export const selectPlay = ({ songs, index }) => {
       type: constants.SET_CURRENT_INDEX,
       value: index,
     });
+    dispatch({
+      type: constants.SET_CURRENT_SONG,
+      value: songs[index],
+    });
   };
 };
+
+export const setFullScreen = (flag)=>{
+  return (dispatch)=>{
+    dispatch({
+      type: constants.SET_FULL_SCREEN,
+      value: flag,
+    });
+  }
+}
