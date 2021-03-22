@@ -9,6 +9,7 @@
       bottom: 0
       z-index: 150
       background: #222
+      display none
       .background
         position: absolute
         left: 0
@@ -18,10 +19,6 @@
         z-index: -1
         opacity: 0.6
         filter: blur(20px)
-      .top
-          transform: translate3d(0, -100px, 0)
-      .bottom
-          transform: translate3d(0, 100px, 0)
       .top
         position: relative
         margin-bottom: 25px
@@ -182,10 +179,19 @@
      
       
       
-      &.normal-enter,&.normal-enter-active
+      
+      &.normal-enter
+        .top
+          opacity: 0
+          transform: translate3d(0, -100px, 0)
+        .bottom
+          opacity: 0
+          transform: translate3d(0, 100px, 0)    
+      &.normal-enter-active
         .top, .bottom
+          opacity: 1
           transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32)
-          transform: translate3d(0, 0, 0) 
+          transform: translate3d(0, 0, 0)     
       &.normal-enter-done
         .top, .bottom
           transform: translate3d(0, 0, 0) 
