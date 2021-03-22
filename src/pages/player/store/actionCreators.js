@@ -1,12 +1,7 @@
 import * as constants from "./actionTypes";
 
-export const selectPlay = () => {
-  debugger
-  return function (dispatch, { songs, index }) {
-    console.log(arguments)
-    console.log(dispatch);
-    console.log(songs);
-
+export const selectPlay = ({ songs, index }) => {
+  return function (dispatch) {
     dispatch({
       type: constants.SET_PLAYING_STATE,
       value: true,
