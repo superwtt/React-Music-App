@@ -29,7 +29,7 @@ export default (state = defaultState, action) => {
     case constants.SET_CURRENT_INDEX:
       return { ...state, currentIndex: action.value };
     case constants.SET_CURRENT_SONG:
-      return { ...state, currentSong: action.value };
+      return { ...state, currentSong: state.playList[action.value] };
     default:
       return state;
   }

@@ -11,8 +11,9 @@ import "./index.styl";
 const transform = prefixStyle("transform");
 
 const Player = (props) => {
+  const [songReady, setSongReady] = useState(false);
   const [playNumber, setPlayNumber] = useState(0);
-  const { fullScreen, playList, currentSong, playing } = props;
+  const { fullScreen, playList, currentSong, playing, currentIndex } = props;
 
   const audio = useRef(null);
 
@@ -108,13 +109,57 @@ const Player = (props) => {
     return playing ? "icon-pause-mini" : "icon-play-mini";
   };
 
+  const _disable = () => {
+    return songReady ? "" : "disable";
+  };
+
   const togglePlaying = () => {
     props.setPlayingState(!playing);
   };
 
   const miniTogglePlaying = (e) => {
     e.stopPropagation();
+    if (!songReady) return;
     togglePlaying();
+    setSongReady(false)
+  };
+
+  const canPlay = () => {
+    setSongReady(true)
+  };
+
+  const error = () => {
+    setSongReady(true)
+  };
+
+  const next = () => {
+    if (!songReady) return;
+    let index = currentIndex + 1;
+    if (index === playList.length) {
+      index = 0;
+    }
+    props.setCurrentIndex(index);
+
+    if (!playing) {
+      togglePlaying();
+    }
+
+    setSongReady(false)
+  };
+
+  const prev = () => {
+    if (!songReady) return;
+    let index = currentIndex - 1;
+    if (index === -1) {
+      index = playList.length - 1;
+    }
+    props.setCurrentIndex(index);
+
+    if (!playing) {
+      togglePlaying();
+    }
+
+    setSongReady(false)
   };
 
   /**
@@ -132,15 +177,16 @@ const Player = (props) => {
   // };
 
   useEffect(() => {
+    setSongReady(true)
     fullScreen ? setPlayNumber(1) : setPlayNumber(0);
   }, [fullScreen]);
 
   useEffect(() => {
-    audio.current && audio.current.play();
+    audio.current && audio.current.play().catch((error) => {});
   }, [currentSong]);
 
   useEffect(() => {
-    playing ? audio.current.play() : audio.current.pause();
+    playing ? audio.current.play().catch((error) => {}) : audio.current.pause();
   }, [playing]);
 
   return (
@@ -189,21 +235,26 @@ const Player = (props) => {
               </div>
             </div>
             <div className="bottom">
+              <div className="progress-wrapper">
+                <span className="time time-l"></span>
+                <div className="progress-bar-wrapper"></div>
+                <div className="time time-r"></div>
+              </div>
               <div className="operators">
                 <div className="icon iLeft">
                   <i className="icon-sequence"></i>
                 </div>
-                <div className="icon iLeft">
-                  <i className="icon-prev"></i>
+                <div className={`icon iLeft ${_disable()}`}>
+                  <i className="icon-prev" onClick={prev}></i>
                 </div>
-                <div className="icon iCenter">
+                <div className={`icon iCenter ${_disable()}`}>
                   <i
                     className={_calculatePlayIcon()}
                     onClick={() => togglePlaying()}
                   ></i>
                 </div>
-                <div className="icon iRight">
-                  <i className="icon-next"></i>
+                <div className={`icon iRight ${_disable()}`}>
+                  <i className="icon-next" onClick={next}></i>
                 </div>
                 <div className="icon iRight">
                   <i className="icon icon-not-favorite"></i>
@@ -253,7 +304,12 @@ const Player = (props) => {
           </CSSTransition>
         </div>
       </div>
-      <audio ref={audio} src={currentSong.url}></audio>
+      <audio
+        ref={audio}
+        src={currentSong.url}
+        onCanPlay={canPlay}
+        onError={error}
+      ></audio>
     </>
   );
 };
@@ -263,6 +319,7 @@ const mapStateToProps = (state) => ({
   playList: state.playerReducer.playList,
   currentSong: state.playerReducer.currentSong,
   playing: state.playerReducer.playing,
+  currentIndex: state.playerReducer.currentIndex,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -272,6 +329,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setPlayingState(flag) {
       dispatch(actionCreators.setPlayingState(flag));
+    },
+    setCurrentIndex(index) {
+      dispatch(actionCreators.setCurrentIndex(index));
     },
   };
 };

@@ -24,7 +24,7 @@ export const selectPlay = ({ songs, index }) => {
     });
     dispatch({
       type: constants.SET_CURRENT_SONG,
-      value: songs[index],
+      value: index,
     });
   };
 };
@@ -43,6 +43,19 @@ export const setPlayingState = (flag)=>{
     dispatch({
       type: constants.SET_PLAYING_STATE,
       value: flag,
+    });
+  }
+}
+
+export const setCurrentIndex = (index)=>{
+  return (dispatch)=>{
+    dispatch({
+      type:constants.SET_CURRENT_INDEX,
+      value:index
+    })
+    dispatch({
+      type: constants.SET_CURRENT_SONG,
+      value: index,
     });
   }
 }

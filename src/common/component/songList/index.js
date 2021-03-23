@@ -19,7 +19,7 @@ const SongList = (props) => {
       <ul>
         {songs.map((item,index) => {
           return (
-            <li className="item" onClick={()=>selectItem(item,index)}>
+            <li className="item" key={index} onClick={()=>selectItem(item,index)}>
               {/* <div className="rank">
                 <span></span>
                 </div> */}
