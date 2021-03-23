@@ -1,5 +1,3 @@
-
-
 .player
     .normalPlayer
       position: fixed
@@ -84,6 +82,8 @@
                 border: 10px solid rgba(255, 255, 255, 0.1)
               .play
                 animation: rotate 20s linear infinite
+              .pause
+                animation-play-state: paused
           .playingLyricWrapper
             width: 80%
             margin: 30px auto 0 auto
@@ -174,12 +174,6 @@
             text-align: left
           .iconFavorite
             color: #d93f30 
-     
-     
-     
-      
-      
-      
       &.normal-enter
         .top
           opacity: 0
@@ -257,17 +251,18 @@
           font-size: 10px
           color: #fff-d
       .control
+        position: relative
         flex: 0 0 30px
         width: 30px
         padding: 0 10px
-        .iconPlayMini, .iconPauseMini, .iconPlaylist
+        .icon-play-mini, .icon-pause-mini, .icon-playlist
           font-size: 30px
           color: rgba(255, 205, 49, 0.5)
         .icon-mini
-          font-size: 32px
-          position: absolute
-          left: 0
-          top: 0
+         // font-size: 32px
+         // position: absolute
+         // left: 0
+         // top: 0
 
   
   

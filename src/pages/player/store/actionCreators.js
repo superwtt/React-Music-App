@@ -37,3 +37,12 @@ export const setFullScreen = (flag)=>{
     });
   }
 }
+
+export const setPlayingState = (flag)=>{
+  return (dispatch)=>{
+    dispatch({
+      type: constants.SET_PLAYING_STATE,
+      value: flag,
+    });
+  }
+}

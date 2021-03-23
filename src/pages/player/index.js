@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
@@ -12,7 +12,9 @@ const transform = prefixStyle("transform");
 
 const Player = (props) => {
   const [playNumber, setPlayNumber] = useState(0);
-  const { fullScreen, playList, currentSong } = props;
+  const { fullScreen, playList, currentSong, playing } = props;
+
+  const audio = useRef(null);
 
   const back = () => {
     props.setFullScreen(false);
@@ -24,8 +26,6 @@ const Player = (props) => {
 
   // CSS3的方式写js动画
   const enter = (el, done) => {
-    console.log(el);
-    console.log(done);
     const { x, y, scale } = _getPosAndScale();
     let animation = {
       0: {
@@ -61,10 +61,6 @@ const Player = (props) => {
   };
 
   const exit = (el, done) => {
-    console.log("ddd");
-    console.log(el);
-    console.log(done);
-
     const { x, y, scale } = _getPosAndScale();
     const cdWrapper = document.getElementsByClassName("cdWrapper")[0];
 
@@ -100,103 +96,164 @@ const Player = (props) => {
     };
   };
 
+  const _cdPlayer = () => {
+    return playing ? "play" : "play pause";
+  };
+
+  const _calculatePlayIcon = () => {
+    return playing ? "icon-pause" : "icon-play";
+  };
+
+  const _miniIcon = () => {
+    return playing ? "icon-pause-mini" : "icon-play-mini";
+  };
+
+  const togglePlaying = () => {
+    props.setPlayingState(!playing);
+  };
+
+  const miniTogglePlaying = (e) => {
+    e.stopPropagation();
+    togglePlaying();
+  };
+
+  /**
+   * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
+   * @param wrapper
+   * @param inner
+   */
+  // const syncWrapperTransform = (wrapper, inner) => {
+  //   let imageWrapper = document.getElementsByClassName(wrapper)[0];
+  //   let image = document.getElementsByClassName(inner)[0];
+  //   let wTransform = getComputedStyle(imageWrapper)[transform];
+  //   let iTransform = getComputedStyle(image)[transform];
+  //   imageWrapper.style[transform] =
+  //     wTransform === "none" ? iTransform : iTransform.concat(" ", wTransform);
+  // };
+
   useEffect(() => {
     fullScreen ? setPlayNumber(1) : setPlayNumber(0);
   }, [fullScreen]);
 
+  useEffect(() => {
+    audio.current && audio.current.play();
+  }, [currentSong]);
+
+  useEffect(() => {
+    playing ? audio.current.play() : audio.current.pause();
+  }, [playing]);
+
   return (
     <>
-      {/* {playList.length > 0 && ( */}
-        <div className="player" style={{ display: playList.length > 0  ? "" : "none" }}>
-          <CSSTransition
-            in={playNumber ? true : false}
-            timeout={400}
-            classNames="normal"
-            onEnter={enter}
-            onEntered={afterEnter}
-            onExit={exit}
-            onExited={afterExit}
-          >
-            <div className="normalPlayer" >
-              <div className="background">
-                <img
-                  width="100%"
-                  height="100%"
-                  src={currentSong.image}
-                  alt=""
-                />
+      <div
+        className="player"
+        style={{ display: playList.length > 0 ? "" : "none" }}
+      >
+        <CSSTransition
+          in={playNumber ? true : false}
+          timeout={400}
+          classNames="normal"
+          onEnter={enter}
+          onEntered={afterEnter}
+          onExit={exit}
+          onExited={afterExit}
+        >
+          <div className="normalPlayer">
+            <div className="background">
+              <img width="100%" height="100%" src={currentSong.image} alt="" />
+            </div>
+            <div className="top">
+              <div className="back" onClick={back}>
+                <i className="icon-back iconBack"></i>
               </div>
-              <div className="top">
-                <div className="back" onClick={back}>
-                  <i className="icon-back iconBack"></i>
-                </div>
-                <h1
-                  className="title"
-                  dangerouslySetInnerHTML={{ __html: currentSong.name }}
-                ></h1>
-                <h2
-                  className="subtitle"
-                  dangerouslySetInnerHTML={{ __html: currentSong.singer }}
-                ></h2>
-              </div>
-              <div className="middle">
-                <div className="middleL">
-                  <div className="cdWrapper">
-                    <div className="cd">
-                      <img className="image" src={currentSong.image} alt="" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bottom">
-                <div className="operators">
-                  <div className="icon iLeft">
-                    <i className="icon-sequence"></i>
-                  </div>
-                  <div className="icon iLeft">
-                    <i className="icon-prev"></i>
-                  </div>
-                  <div className="icon iCenter">
-                    <i className="icon-play"></i>
-                  </div>
-                  <div className="icon iRight">
-                    <i className="icon-next"></i>
-                  </div>
-                  <div className="icon iRight">
-                    <i className="icon icon-not-favorite"></i>
+              <h1
+                className="title"
+                dangerouslySetInnerHTML={{ __html: currentSong.name }}
+              ></h1>
+              <h2
+                className="subtitle"
+                dangerouslySetInnerHTML={{ __html: currentSong.singer }}
+              ></h2>
+            </div>
+            <div className="middle">
+              <div className="middleL">
+                <div className="cdWrapper">
+                  <div className="cd imageWrapper">
+                    <img
+                      className={`image ${_cdPlayer()}`}
+                      src={currentSong.image}
+                      alt=""
+                    />
                   </div>
                 </div>
               </div>
             </div>
-          </CSSTransition>
-          <div style={{ display: fullScreen ? "none" : "" }}>
-            <CSSTransition
-              in={playNumber ? false : true}
-              timeout={300}
-              classNames="mini"
-            >
-              <div className="miniPlayer" onClick={open}>
-                <div className="icon">
-                  <img width="40" height="40" src={currentSong.image} alt="" />
+            <div className="bottom">
+              <div className="operators">
+                <div className="icon iLeft">
+                  <i className="icon-sequence"></i>
                 </div>
-                <div className="text">
-                  <h2
-                    className="name"
-                    dangerouslySetInnerHTML={{ __html: currentSong.name }}
-                  ></h2>
-                  <p
-                    className="desc"
-                    dangerouslySetInnerHTML={{ __html: currentSong.singer }}
-                  ></p>
+                <div className="icon iLeft">
+                  <i className="icon-prev"></i>
                 </div>
-                <div className="control">
-                  <i className="iconPlaylist icon-playlist"></i>
+                <div className="icon iCenter">
+                  <i
+                    className={_calculatePlayIcon()}
+                    onClick={() => togglePlaying()}
+                  ></i>
+                </div>
+                <div className="icon iRight">
+                  <i className="icon-next"></i>
+                </div>
+                <div className="icon iRight">
+                  <i className="icon icon-not-favorite"></i>
                 </div>
               </div>
-            </CSSTransition>
+            </div>
           </div>
+        </CSSTransition>
+        <div style={{ display: fullScreen ? "none" : "" }}>
+          <CSSTransition
+            in={playNumber ? false : true}
+            timeout={300}
+            classNames="mini"
+          >
+            <div className="miniPlayer" onClick={open}>
+              <div className="icon">
+                <div className="imgWrapper miniWrapper">
+                  <img
+                    width="40"
+                    height="40"
+                    className={`miniImage ${_cdPlayer()}`}
+                    src={currentSong.image}
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div className="text">
+                <h2
+                  className="name"
+                  dangerouslySetInnerHTML={{ __html: currentSong.name }}
+                ></h2>
+                <p
+                  className="desc"
+                  dangerouslySetInnerHTML={{ __html: currentSong.singer }}
+                ></p>
+              </div>
+              <div className="control">
+                <i
+                  onClick={miniTogglePlaying}
+                  className={`icon-mini ${_miniIcon()}`}
+                ></i>
+              </div>
+              <div className="control">
+                <i className="iconPlaylist icon-playlist"></i>
+              </div>
+            </div>
+          </CSSTransition>
         </div>
-      {/* )} */}
+      </div>
+      <audio ref={audio} src={currentSong.url}></audio>
     </>
   );
 };
@@ -205,12 +262,16 @@ const mapStateToProps = (state) => ({
   fullScreen: state.playerReducer.fullScreen,
   playList: state.playerReducer.playList,
   currentSong: state.playerReducer.currentSong,
+  playing: state.playerReducer.playing,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setFullScreen(flag) {
       dispatch(actionCreators.setFullScreen(flag));
+    },
+    setPlayingState(flag) {
+      dispatch(actionCreators.setPlayingState(flag));
     },
   };
 };
