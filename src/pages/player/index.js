@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
 
+import ProgressCircle from '@/common/component/progressCircle'
+import ProgressBar from '@/common/component/progressBar'
 import { prefixStyle } from "@/common/js/dom";
 import * as actionCreators from "../player/store/actionCreators";
 
@@ -13,6 +15,8 @@ const transform = prefixStyle("transform");
 const Player = (props) => {
   const [songReady, setSongReady] = useState(false);
   const [playNumber, setPlayNumber] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [percent, setPercent] = useState(0);
   const { fullScreen, playList, currentSong, playing, currentIndex } = props;
 
   const audio = useRef(null);
@@ -162,6 +166,38 @@ const Player = (props) => {
     setSongReady(false)
   };
 
+  const _pad = (num,n=2)=>{
+    let len = num.toString().length;
+    while(len<n){
+      num = '0'+num
+      len++
+    }
+    return num
+  }
+
+  const formatTime = (interval)=>{
+    interval = interval | 0;
+    const minute = interval / 60 |0;
+    const second = interval%60|0;
+    return `${minute}:${_pad(second)}` 
+  }
+
+  const timeUpdate = (e)=>{
+    const time = e.target.currentTime;
+    setCurrentTime(formatTime(time))
+    setPercent(time/currentSong.duration)
+  }
+
+  const onPercentChange = (per)=>{
+    audio.current.currentTime = parseFloat(per * currentSong.duration)
+    if(!playing){
+      togglePlaying()
+    }
+    if(per===1){
+      props.setCurrentIndex(currentIndex+1);
+    }
+  }
+
   /**
    * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
    * @param wrapper
@@ -236,9 +272,11 @@ const Player = (props) => {
             </div>
             <div className="bottom">
               <div className="progress-wrapper">
-                <span className="time time-l"></span>
-                <div className="progress-bar-wrapper"></div>
-                <div className="time time-r"></div>
+                <span className="time time-l">{currentTime}</span>
+                <div className="progress-bar-wrapper">
+                   <ProgressBar percent={percent} percentChange={onPercentChange} />
+                </div>
+                <div className="time time-r">{formatTime(currentSong.duration)}</div>
               </div>
               <div className="operators">
                 <div className="icon iLeft">
@@ -292,12 +330,15 @@ const Player = (props) => {
                 ></p>
               </div>
               <div className="control">
+                <ProgressCircle percent={percent}>
                 <i
                   onClick={miniTogglePlaying}
                   className={`icon-mini ${_miniIcon()}`}
                 ></i>
+                </ProgressCircle>
               </div>
               <div className="control">
+                
                 <i className="iconPlaylist icon-playlist"></i>
               </div>
             </div>
@@ -309,6 +350,7 @@ const Player = (props) => {
         src={currentSong.url}
         onCanPlay={canPlay}
         onError={error}
+        onTimeUpdate={timeUpdate}
       ></audio>
     </>
   );
