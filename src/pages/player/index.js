@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
 
+import { shuffle } from "@/common/js/util";
 import { playMode } from "@/common/js/config";
 import ProgressCircle from "@/common/component/progressCircle";
 import ProgressBar from "@/common/component/progressBar";
@@ -25,6 +26,7 @@ const Player = (props) => {
     playing,
     currentIndex,
     mode,
+    sequenceList
   } = props;
 
   const audio = useRef(null);
@@ -217,6 +219,15 @@ const Player = (props) => {
   const changeMode = () => {
     const currentMode = (mode + 1) % 3;
     props.setSequence(currentMode);
+
+    let list = null;
+    if (mode === playMode.random) {
+      list = shuffle(sequenceList);
+    } else {
+      list = sequenceList;
+    }
+    
+    props.setPlayList(list);
   };
 
   /**
@@ -388,6 +399,7 @@ const mapStateToProps = (state) => ({
   playing: state.playerReducer.playing,
   currentIndex: state.playerReducer.currentIndex,
   mode: state.playerReducer.mode,
+  sequenceList: state.playerReducer.sequenceList,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -404,6 +416,9 @@ const mapDispatchToProps = (dispatch) => {
     setSequence(mode) {
       dispatch(actionCreators.setSequence(mode));
     },
+    setPlayList(list){
+      dispatch(actionCreators.setPlayList(list))
+    }
   };
 };
 

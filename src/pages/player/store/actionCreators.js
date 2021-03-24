@@ -68,3 +68,12 @@ export const setSequence = mode=>{
     })
   }
 }
+
+export const setPlayList = (list)=>{
+  return (dispatch)=>{
+    dispatch({
+      type:constants.SET_PLAYLIST,
+      value:list
+    })
+  }
+}
