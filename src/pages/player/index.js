@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
 
-import ProgressCircle from '@/common/component/progressCircle'
-import ProgressBar from '@/common/component/progressBar'
+import { playMode } from "@/common/js/config";
+import ProgressCircle from "@/common/component/progressCircle";
+import ProgressBar from "@/common/component/progressBar";
 import { prefixStyle } from "@/common/js/dom";
 import * as actionCreators from "../player/store/actionCreators";
 
@@ -17,7 +18,14 @@ const Player = (props) => {
   const [playNumber, setPlayNumber] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [percent, setPercent] = useState(0);
-  const { fullScreen, playList, currentSong, playing, currentIndex } = props;
+  const {
+    fullScreen,
+    playList,
+    currentSong,
+    playing,
+    currentIndex,
+    mode,
+  } = props;
 
   const audio = useRef(null);
 
@@ -101,6 +109,14 @@ const Player = (props) => {
     };
   };
 
+  const _playMode = () => {
+    return mode === playMode.sequence
+      ? "icon-sequence"
+      : mode === playMode.loop
+      ? "icon-loop"
+      : "icon-random";
+  };
+
   const _cdPlayer = () => {
     return playing ? "play" : "play pause";
   };
@@ -125,15 +141,15 @@ const Player = (props) => {
     e.stopPropagation();
     if (!songReady) return;
     togglePlaying();
-    setSongReady(false)
+    setSongReady(false);
   };
 
   const canPlay = () => {
-    setSongReady(true)
+    setSongReady(true);
   };
 
   const error = () => {
-    setSongReady(true)
+    setSongReady(true);
   };
 
   const next = () => {
@@ -148,7 +164,7 @@ const Player = (props) => {
       togglePlaying();
     }
 
-    setSongReady(false)
+    setSongReady(false);
   };
 
   const prev = () => {
@@ -163,40 +179,45 @@ const Player = (props) => {
       togglePlaying();
     }
 
-    setSongReady(false)
+    setSongReady(false);
   };
 
-  const _pad = (num,n=2)=>{
+  const _pad = (num, n = 2) => {
     let len = num.toString().length;
-    while(len<n){
-      num = '0'+num
-      len++
+    while (len < n) {
+      num = "0" + num;
+      len++;
     }
-    return num
-  }
+    return num;
+  };
 
-  const formatTime = (interval)=>{
+  const formatTime = (interval) => {
     interval = interval | 0;
-    const minute = interval / 60 |0;
-    const second = interval%60|0;
-    return `${minute}:${_pad(second)}` 
-  }
+    const minute = (interval / 60) | 0;
+    const second = interval % 60 | 0;
+    return `${minute}:${_pad(second)}`;
+  };
 
-  const timeUpdate = (e)=>{
+  const timeUpdate = (e) => {
     const time = e.target.currentTime;
-    setCurrentTime(formatTime(time))
-    setPercent(time/currentSong.duration)
-  }
+    setCurrentTime(formatTime(time));
+    setPercent(time / currentSong.duration);
+  };
 
-  const onPercentChange = (per)=>{
-    audio.current.currentTime = parseFloat(per * currentSong.duration)
-    if(!playing){
-      togglePlaying()
+  const onPercentChange = (per) => {
+    audio.current.currentTime = parseFloat(per * currentSong.duration);
+    if (!playing) {
+      togglePlaying();
     }
-    if(per===1){
-      props.setCurrentIndex(currentIndex+1);
+    if (per === 1) {
+      props.setCurrentIndex(currentIndex + 1);
     }
-  }
+  };
+
+  const changeMode = () => {
+    const currentMode = (mode + 1) % 3;
+    props.setSequence(currentMode);
+  };
 
   /**
    * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
@@ -213,7 +234,7 @@ const Player = (props) => {
   // };
 
   useEffect(() => {
-    setSongReady(true)
+    setSongReady(true);
     fullScreen ? setPlayNumber(1) : setPlayNumber(0);
   }, [fullScreen]);
 
@@ -274,13 +295,18 @@ const Player = (props) => {
               <div className="progress-wrapper">
                 <span className="time time-l">{currentTime}</span>
                 <div className="progress-bar-wrapper">
-                   <ProgressBar percent={percent} percentChange={onPercentChange} />
+                  <ProgressBar
+                    percent={percent}
+                    percentChange={onPercentChange}
+                  />
                 </div>
-                <div className="time time-r">{formatTime(currentSong.duration)}</div>
+                <div className="time time-r">
+                  {formatTime(currentSong.duration)}
+                </div>
               </div>
               <div className="operators">
-                <div className="icon iLeft">
-                  <i className="icon-sequence"></i>
+                <div className="icon iLeft" onClick={changeMode}>
+                  <i className={_playMode()}></i>
                 </div>
                 <div className={`icon iLeft ${_disable()}`}>
                   <i className="icon-prev" onClick={prev}></i>
@@ -331,14 +357,13 @@ const Player = (props) => {
               </div>
               <div className="control">
                 <ProgressCircle percent={percent}>
-                <i
-                  onClick={miniTogglePlaying}
-                  className={`icon-mini ${_miniIcon()}`}
-                ></i>
+                  <i
+                    onClick={miniTogglePlaying}
+                    className={`icon-mini ${_miniIcon()}`}
+                  ></i>
                 </ProgressCircle>
               </div>
               <div className="control">
-                
                 <i className="iconPlaylist icon-playlist"></i>
               </div>
             </div>
@@ -362,6 +387,7 @@ const mapStateToProps = (state) => ({
   currentSong: state.playerReducer.currentSong,
   playing: state.playerReducer.playing,
   currentIndex: state.playerReducer.currentIndex,
+  mode: state.playerReducer.mode,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -374,6 +400,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setCurrentIndex(index) {
       dispatch(actionCreators.setCurrentIndex(index));
+    },
+    setSequence(mode) {
+      dispatch(actionCreators.setSequence(mode));
     },
   };
 };

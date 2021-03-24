@@ -12,7 +12,7 @@ const ProgressCircle = (props) => {
 
   useEffect(() => {
     const offset = (1 - percent) * dashArray;
-    console.log(offset);
+    // console.log(offset);
     setDashOffset(offset);
   }, [percent]);
 

@@ -59,3 +59,12 @@ export const setCurrentIndex = (index)=>{
     });
   }
 }
+
+export const setSequence = mode=>{
+  return (dispatch)=>{
+    dispatch({
+      type:constants.SET_PLAY_MODE,
+      value:mode
+    })
+  }
+}
