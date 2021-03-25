@@ -154,6 +154,11 @@ const Player = (props) => {
     setSongReady(true);
   };
 
+  const loop = ()=>{
+    audio.current.currentTime = 0;
+    audio.current.play();
+  }
+
   const next = () => {
     if (!songReady) return;
     let index = currentIndex + 1;
@@ -184,6 +189,15 @@ const Player = (props) => {
     setSongReady(false);
   };
 
+  // audio播放到最后的时候 要能根据当前模式切换歌曲播放
+  const end = ()=>{
+    if(mode===playMode.loop){
+      loop()
+    }else{
+      next()
+    }
+  }
+
   const _pad = (num, n = 2) => {
     let len = num.toString().length;
     while (len < n) {
@@ -211,22 +225,30 @@ const Player = (props) => {
     if (!playing) {
       togglePlaying();
     }
-    if (per === 1) {
-      props.setCurrentIndex(currentIndex + 1);
-    }
+    // if (per === 1) {
+    //   props.setCurrentIndex(currentIndex + 1);
+    // }
   };
+
+  const resetCurrentIndex = (list)=>{
+    let index = list.findIndex((item)=>{
+      return item.id === currentSong.id
+    })
+    props.setCurrentIndex(index)
+  }
 
   const changeMode = () => {
     const currentMode = (mode + 1) % 3;
     props.setSequence(currentMode);
 
     let list = null;
-    if (mode === playMode.random) {
+
+    if (currentMode === playMode.random) {
       list = shuffle(sequenceList);
     } else {
       list = sequenceList;
     }
-    
+    resetCurrentIndex(list);
     props.setPlayList(list);
   };
 
@@ -387,6 +409,7 @@ const Player = (props) => {
         onCanPlay={canPlay}
         onError={error}
         onTimeUpdate={timeUpdate}
+        onEnded={end}
       ></audio>
     </>
   );

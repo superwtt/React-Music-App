@@ -42,6 +42,10 @@ const MusicList = (props) => {
     props.selectPlay({ songs, index });
   };
 
+  const randomPlay = ()=>{
+    props.randomPlay(songs)
+  }
+
   useEffect(() => {
     setNum(1);
     const imageHeight = document.getElementsByClassName("bgImage")[0]
@@ -120,7 +124,7 @@ const MusicList = (props) => {
         style={{ backgroundImage: "url(" + props.bgImage + ")" }}
       >
         {songs.length > 0 && (
-          <div className="playWrapper playBtn">
+          <div className="playWrapper playBtn" onClick={randomPlay}>
             <div className="play">
               <i className="icon-play iconPlay"></i>
               <span className="text">随机播放全部</span>
@@ -172,6 +176,9 @@ const mapDispatchToProps = (dispatch) => {
     selectPlay({ songs, index }) {
       dispatch(actionCreators.selectPlay({ songs, index }));
     },
+    randomPlay(list){
+      dispatch(actionCreators.randomPlay(list))
+    }
   };
 };
 
