@@ -7,31 +7,33 @@ import React, {
 } from "react";
 import PropTypes from "prop-types";
 import BScroll from "better-scroll";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
-import './index.less';
+import "./index.less";
 
 let scroll = null;
 
 const Scroll = forwardRef((props, ref) => {
-
   const wrapperRef = useRef(null);
 
-  const bindScroll = ()=>{
-    if(props.listenScroll){
-      scroll&&scroll.on('scroll',(pos)=>{
-        props.scroll(pos)
-      })
+  const bindScroll = () => {
+    if (props.listenScroll) {
+      scroll &&
+        scroll.on("scroll", (pos) => {
+          props.scroll(pos);
+        });
     }
-  }
+  };
 
   const _initScroll = () => {
+    console.log(wrapperRef.current);
     if (!wrapperRef.current) return;
 
     const sc = new BScroll(wrapperRef.current, {
-      probeType:props.probeType,
-      click:props.click,
+      probeType: props.probeType,
+      click: props.click,
     });
-    scroll=sc;
+    scroll = sc;
     bindScroll();
   };
 
@@ -45,11 +47,15 @@ const Scroll = forwardRef((props, ref) => {
     scroll && scroll.refresh();
     bindScroll();
   };
-  const scrollTo = function() {
+  const scrollTo = function () {
     scroll && scroll.scrollTo.apply(scroll, arguments);
   };
-  const scrollToElement = function() {
+  const scrollToElement = function () {
     scroll && scroll.scrollToElement.apply(scroll, arguments);
+  };
+
+  const getElement = () => {
+    return wrapperRef.current;
   };
 
   useImperativeHandle(ref, () => ({
@@ -57,19 +63,24 @@ const Scroll = forwardRef((props, ref) => {
     disable,
     refresh,
     scrollTo,
-    scrollToElement
+    scrollToElement,
+    getElement,
   }));
 
   useEffect(() => {
     setTimeout(() => {
       _initScroll();
     }, 20);
-  },[]);
+  }, []);
 
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
   useEffect(() => {
     refresh();
   }, [props.data.length]);
+
+  // useDeepCompareEffect(() => {
+  //   console.log("deep-keys", props.data);
+  // }, [props.data]);
 
   return (
     <div className={props.classVal} ref={wrapperRef}>
@@ -78,21 +89,20 @@ const Scroll = forwardRef((props, ref) => {
   );
 });
 
-Scroll.displayName = 'Scroll';
+Scroll.displayName = "Scroll";
 
 Scroll.propTypes = {
   propType: PropTypes.number,
   click: PropTypes.bool,
   data: PropTypes.array,
-  listenScroll: PropTypes.bool
+  listenScroll: PropTypes.bool,
 };
 
 Scroll.defaultProps = {
   propType: 1,
   click: true,
   data: null,
-  listenScroll:false
+  listenScroll: false,
 };
-
 
 export default Scroll;

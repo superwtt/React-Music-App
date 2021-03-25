@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
+import Lyric from "lyric-parser";
 
+import Scroll from "@/common/component/scroll";
 import { shuffle } from "@/common/js/util";
 import { playMode } from "@/common/js/config";
 import ProgressCircle from "@/common/component/progressCircle";
@@ -13,12 +15,22 @@ import * as actionCreators from "../player/store/actionCreators";
 import "./index.styl";
 
 const transform = prefixStyle("transform");
+const transitionDuration = prefixStyle("transitionDuration");
+
+const touchFinger = {}; // 记录滑动事件的相关参数
 
 const Player = (props) => {
   const [songReady, setSongReady] = useState(false);
   const [playNumber, setPlayNumber] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [percent, setPercent] = useState(0);
+  const [currentLyric, setCurrentLyric] = useState(null);
+  const [currentLineNum, setCurrentLineNum] = useState(0);
+  const [currentShow, setCurrentShow] = useState("cd");
+  const [playingLyric, setPlayingLyric] = useState("");
+
+  const lyricList = useRef(null);
+
   const {
     fullScreen,
     playList,
@@ -26,7 +38,7 @@ const Player = (props) => {
     playing,
     currentIndex,
     mode,
-    sequenceList
+    sequenceList,
   } = props;
 
   const audio = useRef(null);
@@ -137,6 +149,9 @@ const Player = (props) => {
 
   const togglePlaying = () => {
     props.setPlayingState(!playing);
+    if (currentLyric) {
+      currentLyric.togglePlay();
+    }
   };
 
   const miniTogglePlaying = (e) => {
@@ -154,49 +169,59 @@ const Player = (props) => {
     setSongReady(true);
   };
 
-  const loop = ()=>{
+  const loop = () => {
     audio.current.currentTime = 0;
     audio.current.play();
-  }
+
+    if (currentLyric) {
+      currentLyric.seek(0); //循环播放的时候 歌词能够回到最顶部
+    }
+  };
 
   const next = () => {
     if (!songReady) return;
-    let index = currentIndex + 1;
-    if (index === playList.length) {
-      index = 0;
-    }
-    props.setCurrentIndex(index);
+    if (playList.length === 1) {
+      loop();
+    } else {
+      let index = currentIndex + 1;
+      if (index === playList.length) {
+        index = 0;
+      }
+      props.setCurrentIndex(index);
 
-    if (!playing) {
-      togglePlaying();
+      if (!playing) {
+        togglePlaying();
+      }
     }
-
     setSongReady(false);
   };
 
   const prev = () => {
     if (!songReady) return;
-    let index = currentIndex - 1;
-    if (index === -1) {
-      index = playList.length - 1;
-    }
-    props.setCurrentIndex(index);
+    if (playList.length === 1) {
+      loop();
+    } else {
+      let index = currentIndex - 1;
+      if (index === -1) {
+        index = playList.length - 1;
+      }
+      props.setCurrentIndex(index);
 
-    if (!playing) {
-      togglePlaying();
+      if (!playing) {
+        togglePlaying();
+      }
     }
-
     setSongReady(false);
   };
 
   // audio播放到最后的时候 要能根据当前模式切换歌曲播放
-  const end = ()=>{
-    if(mode===playMode.loop){
-      loop()
-    }else{
-      next()
+  const end = () => {
+    if (mode === playMode.loop) {
+      loop();
+    } else {
+      next();
     }
-  }
+  };
 
   const _pad = (num, n = 2) => {
     let len = num.toString().length;
@@ -221,21 +246,27 @@ const Player = (props) => {
   };
 
   const onPercentChange = (per) => {
-    audio.current.currentTime = parseFloat(per * currentSong.duration);
+    const time = parseFloat(per * currentSong.duration);
+    audio.current.currentTime = time;
     if (!playing) {
       togglePlaying();
+    }
+
+    //
+    if (currentLyric) {
+      currentLyric.seek(time * 1000);
     }
     // if (per === 1) {
     //   props.setCurrentIndex(currentIndex + 1);
     // }
   };
 
-  const resetCurrentIndex = (list)=>{
-    let index = list.findIndex((item)=>{
-      return item.id === currentSong.id
-    })
-    props.setCurrentIndex(index)
-  }
+  const resetCurrentIndex = (list) => {
+    let index = list.findIndex((item) => {
+      return item.id === currentSong.id;
+    });
+    props.setCurrentIndex(index);
+  };
 
   const changeMode = () => {
     const currentMode = (mode + 1) % 3;
@@ -250,6 +281,128 @@ const Player = (props) => {
     }
     resetCurrentIndex(list);
     props.setPlayList(list);
+  };
+
+  const handleLyric = ({ lineNum, txt }) => {
+    setCurrentLineNum(lineNum);
+
+    let lyricLines = document.getElementsByClassName("lyricLine");
+
+    if (lineNum > 5) {
+      let lineEl = lyricLines[lineNum - 5];
+      lyricList.current.scrollToElement(lineEl, 1000);
+    } else {
+      lyricList.current.scrollTo(0, 0, 1000);
+    }
+
+    setPlayingLyric(txt);
+  };
+
+  const getLyric = () => {
+    currentSong
+      .getLyric()
+      .then((res) => {
+        const lyric = new Lyric(res, handleLyric);
+        setCurrentLyric(lyric); // useState是异步的
+        if (playing) {
+          // currentLyric.lines&&currentLyric.play()  useState是异步的，set了之后不会立马拿到最新值
+          lyric.lines && lyric.play(); // 能把播放到当前歌曲的歌词反应出来
+        }
+      })
+      .catch(() => {
+        setCurrentLyric(null);
+        setPlayingLyric("");
+        setCurrentLineNum(0);
+      });
+  };
+
+  const middleTouchStart = (e) => {
+    e.stopPropagation();
+    touchFinger.initiated = true;
+    const touch = e.touches[0];
+    touchFinger.startX = touch.pageX;
+    touchFinger.startY = touch.pageY;
+  };
+  const middleTouchMove = (e) => {
+    e.stopPropagation();
+    if (!touchFinger.initiated) return;
+    const touch = e.touches[0];
+    const delatX = touch.pageX - touchFinger.startX;
+    const delatY = touch.pageY - touchFinger.startY;
+
+    if (Math.abs(delatY) > Math.abs(delatX)) {
+      return;
+    }
+
+    const left = currentShow === "cd" ? 0 : -window.innerWidth;
+
+    // console.log(left)
+    // console.log(delatX)
+
+    // 分为两种情况，1.向左滑，距离就是delatX，此时delatX是负值。2.向右滑，距离就是innerWidth+delatX，此时delatX是正值
+    const offsetWidth = Math.min(
+      0,
+      Math.max(-window.innerWidth, left + delatX)
+    );
+
+    touchFinger.percent = Math.abs(offsetWidth / window.innerWidth);
+
+    // 设置歌词位移
+    lyricList.current.getElement().style[
+      transform
+    ] = `translate3d(${offsetWidth}px,0,0)`;
+
+    // 设置缓动效果
+    lyricList.current.getElement().style[transitionDuration] = `0`;
+
+    // 设置cd背景透明度
+    document.getElementsByClassName("middleL")[0].style.opacity =
+      1 - touchFinger.percent;
+    document.getElementsByClassName("middleL")[0].style[
+      transitionDuration
+    ] = `0`;
+  };
+  const middleTouchEnd = (e) => {
+    e.stopPropagation();
+
+    let offsetWidth;
+    let opacity;
+
+    // 从左向右和从右向左 参照距离都是滑动距离超过10%就作出改变
+    // 从右向左滑
+    if (currentShow === "cd") {
+      if (touchFinger.percent > 0.1) {
+        offsetWidth = -window.innerWidth;
+        opacity = 0;
+        setCurrentShow("lyric");
+      } else {
+        offsetWidth = 0;
+        opacity = 1;
+      }
+      lyricList.current.refresh();
+    }
+    // 从左向右滑
+    else {
+      if (touchFinger.percent > 0.1) {
+        offsetWidth = -window.innerWidth;
+        opacity = 0;
+      } else {
+        opacity = 1;
+        offsetWidth = 0;
+        setCurrentShow("cd");
+      }
+    }
+    lyricList.current.getElement().style[
+      transform
+    ] = `translate3d(${offsetWidth}px,0,0)`;
+
+    lyricList.current.getElement().style[transitionDuration] = `300ms`;
+
+    // 设置cd背景透明度
+    document.getElementsByClassName("middleL")[0].style.opacity = opacity;
+    document.getElementsByClassName("middleL")[0].style[
+      transitionDuration
+    ] = `300ms`;
   };
 
   /**
@@ -272,7 +425,14 @@ const Player = (props) => {
   }, [fullScreen]);
 
   useEffect(() => {
-    audio.current && audio.current.play().catch((error) => {});
+    if (currentLyric) {
+      currentLyric.stop();
+    }
+
+    setTimeout(() => {
+      audio.current && audio.current.play().catch((error) => {});
+      currentSong.id && getLyric();
+    }, 1000);
   }, [currentSong]);
 
   useEffect(() => {
@@ -311,7 +471,12 @@ const Player = (props) => {
                 dangerouslySetInnerHTML={{ __html: currentSong.singer }}
               ></h2>
             </div>
-            <div className="middle">
+            <div
+              className="middle"
+              onTouchStart={middleTouchStart}
+              onTouchMove={middleTouchMove}
+              onTouchEnd={middleTouchEnd}
+            >
               <div className="middleL">
                 <div className="cdWrapper">
                   <div className="cd imageWrapper">
@@ -322,9 +487,44 @@ const Player = (props) => {
                     />
                   </div>
                 </div>
+                <div className="playingLyricWrapper">
+                  <div className="playingLyric">{playingLyric}</div>
+                </div>
               </div>
+              <Scroll
+                classVal={"middle-r"}
+                data={currentLyric ? currentLyric.lines : []}
+                ref={lyricList}
+              >
+                <div className="lyric-wrapper">
+                  {currentLyric && currentLyric.lines && (
+                    <div>
+                      {currentLyric.lines.map((item, index) => {
+                        return (
+                          <p
+                            key={index}
+                            className={`lyricLine text ${
+                              currentLineNum === index ? "current" : ""
+                            }`}
+                          >
+                            {item.txt}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </Scroll>
             </div>
             <div className="bottom">
+              <div className="dot-wrapper">
+                <div
+                  className={`dot ${currentShow === "cd" ? "active" : ""}`}
+                ></div>
+                <div
+                  className={`dot ${currentShow === "lyric" ? "active" : ""}`}
+                ></div>
+              </div>
               <div className="progress-wrapper">
                 <span className="time time-l">{currentTime}</span>
                 <div className="progress-bar-wrapper">
@@ -439,9 +639,9 @@ const mapDispatchToProps = (dispatch) => {
     setSequence(mode) {
       dispatch(actionCreators.setSequence(mode));
     },
-    setPlayList(list){
-      dispatch(actionCreators.setPlayList(list))
-    }
+    setPlayList(list) {
+      dispatch(actionCreators.setPlayList(list));
+    },
   };
 };
 
