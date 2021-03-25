@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
+import { playlistMixin } from "@/common/js/mixin";
 import Scroll from "@/common/component/scroll";
 import Slider from "@/common/component/slider";
 import Loading from "@/common/component/loading";
@@ -9,7 +10,7 @@ import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
 const Recommend = (props) => {
-  const { slider, discList } = props;
+  const { slider, discList,playList } = props;
 
   const recommendContent = useRef(null);
 
@@ -35,9 +36,23 @@ const Recommend = (props) => {
       });
   };
 
+  const handlePlaylist = () => {
+    // throw new Error("component must implement handlePlaylist method");
+    if(!playList) return
+    const bottom = playList.length > 0 ? '60px' : '0'
+
+    document.getElementsByClassName("recommend")[0].style.bottom = bottom
+    recommendContent.current.refresh()
+  };
+
   useEffect(() => {
     initData();
+    handlePlaylist(playList);
   }, []);
+
+  useEffect(()=>{
+    handlePlaylist(playList);
+  },[playList])
 
   return (
     <div className="recommend">
@@ -78,7 +93,8 @@ const Recommend = (props) => {
 const mapStateToProps = (state) => ({
   slider: state.recommendReducer.slider,
   discList: state.recommendReducer.discList,
-});
+  playList:state.playerReducer.playList
+})
 
 // dispatch(action) 方法更新state
 const mapDispatchToProps = (dispatch) => {

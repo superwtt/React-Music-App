@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef,useEffect, useMemo, useRef, useState,useImperativeHandle } from "react";
 
 import Loading from "@/common/component/loading";
 import { getData } from "@/common/js/dom";
@@ -14,7 +14,7 @@ const touch = {
   anchorIndex: 0,
 };
 
-const ListView = (props) => {
+const ListView = forwardRef((props,ref) => {
   const [shortcutList, setShortcutList] = useState([]);
   const [listenScroll, setListenScroll] = useState(true);
   const [scrollY, setScrollY] = useState(-1);
@@ -95,6 +95,13 @@ const ListView = (props) => {
   const selectItem = (item)=>{
     props.selectItem(item)
   }
+  const refresh = () => {
+    listView && listView.current.refresh();
+  };
+  
+  useImperativeHandle(ref, () => ({
+    refresh,
+  }));
 
   useEffect(() => {
     setShortcutList(calShortcutList);
@@ -132,6 +139,8 @@ const ListView = (props) => {
     if (!dom.length) return;
     dom[0].style.transform = `translate3d(0,${fixedTop}px,0)`;
   }, [diff]);
+
+  
 
   return (
     <Scroll
@@ -192,6 +201,7 @@ const ListView = (props) => {
       )}
     </Scroll>
   );
-};
+});
+
 
 export default ListView;

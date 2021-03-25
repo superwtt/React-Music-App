@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 
 import SingerDetail from "@/pages/singerDetail";
@@ -12,6 +12,10 @@ const HOT_NAME = "热门";
 const HOT_SINGER_LEN = 10;
 
 const Singer = (props) => {
+
+  const {playList} = props;
+
+  const listViewRef = useRef(null);
 
   const [singers,setSingers] = useState([])
   const [showDetail,setShowDetail] = useState(0);
@@ -73,15 +77,29 @@ const Singer = (props) => {
     },300)
   }
 
+  const handlePlaylist = () => {
+    // throw new Error("component must implement handlePlaylist method");
+    if(!playList) return
+    const bottom = playList.length > 0 ? '60px' : '0'
+
+    document.getElementsByClassName("singer")[0].style.bottom = bottom
+    listViewRef.current.refresh()
+  };
+
+  useEffect(()=>{
+    handlePlaylist(playList);
+  },[playList])
+
   useEffect(() => {
     props.getSingerList().then((res) => {
       const list = _normalizeSinger(res.data.list);
       setSingers(list);
     });
+    handlePlaylist(playList);
   }, []);
 
   return <div className="singer">
-    <ListView selectItem={selectItem} data={singers} />
+    <ListView ref={listViewRef} selectItem={selectItem} data={singers} />
     {
       showDetail>0&&<SingerDetail showDetail={showDetail} singer={singerTarget} hide={hide} />
     }
@@ -90,6 +108,7 @@ const Singer = (props) => {
 
 const mapStateToProps = (state) => ({
   singers: state.singerReducer.singers,
+  playList:state.playerReducer.playList
 });
 
 const mapDispatchToProps = (dispatch) => {
