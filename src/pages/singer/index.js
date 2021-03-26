@@ -87,7 +87,7 @@ const Singer = (props) => {
   };
 
   useEffect(()=>{
-    handlePlaylist(playList);
+    // handlePlaylist(playList);
   },[playList])
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const Singer = (props) => {
       const list = _normalizeSinger(res.data.list);
       setSingers(list);
     });
-    handlePlaylist(playList);
+    // handlePlaylist(playList);
   }, []);
 
   return <div className="singer">

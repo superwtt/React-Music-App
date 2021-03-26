@@ -19,8 +19,9 @@ const transitionDuration = prefixStyle("transitionDuration");
 
 const touchFinger = {}; // 记录滑动事件的相关参数
 
+let songReady = false;
+
 const Player = (props) => {
-  const [songReady, setSongReady] = useState(false);
   const [playNumber, setPlayNumber] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [percent, setPercent] = useState(0);
@@ -156,17 +157,15 @@ const Player = (props) => {
 
   const miniTogglePlaying = (e) => {
     e.stopPropagation();
-    if (!songReady) return;
     togglePlaying();
-    setSongReady(false);
   };
 
   const canPlay = () => {
-    setSongReady(true);
+    songReady = true;
   };
 
   const error = () => {
-    setSongReady(true);
+    songReady = true;
   };
 
   const loop = () => {
@@ -193,7 +192,7 @@ const Player = (props) => {
         togglePlaying();
       }
     }
-    setSongReady(false);
+    songReady = false;
   };
 
   const prev = () => {
@@ -211,7 +210,7 @@ const Player = (props) => {
         togglePlaying();
       }
     }
-    setSongReady(false);
+    songReady = false;
   };
 
   // audio播放到最后的时候 要能根据当前模式切换歌曲播放
@@ -420,7 +419,8 @@ const Player = (props) => {
   // };
 
   useEffect(() => {
-    setSongReady(true);
+    songReady = true;
+
     fullScreen ? setPlayNumber(1) : setPlayNumber(0);
   }, [fullScreen]);
 
@@ -428,7 +428,6 @@ const Player = (props) => {
     if (currentLyric) {
       currentLyric.stop();
     }
-
     setTimeout(() => {
       audio.current && audio.current.play().catch((error) => {});
       currentSong.id && getLyric();

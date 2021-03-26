@@ -18,7 +18,7 @@ const ProgressCircle = (props) => {
 
   return (
     <>
-      <div class="progress-circle">
+      <div className="progress-circle">
         <svg
           viewBox="0 0 100 100"
           version="1.1"
@@ -27,14 +27,14 @@ const ProgressCircle = (props) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle
-            class="progress-background"
+            className="progress-background"
             r="50"
             cx="50"
             cy="50"
             fill="transparent"
           />
           <circle
-            class="progress-bar"
+            className="progress-bar"
             r="50"
             cx="50"
             cy="50"
