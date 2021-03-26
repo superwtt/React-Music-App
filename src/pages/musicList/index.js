@@ -20,7 +20,7 @@ const MusicList = (props) => {
   const [scrollY, setScrollY] = useState(0);
   const [num, setNum] = useState(-1);
 
-  const { songs } = props;
+  const { songs, fullScreen } = props;
 
   const musicList = useRef(null);
 
@@ -42,9 +42,9 @@ const MusicList = (props) => {
     props.selectPlay({ songs, index });
   };
 
-  const randomPlay = ()=>{
-    props.randomPlay(songs)
-  }
+  const randomPlay = () => {
+    props.randomPlay(songs);
+  };
 
   useEffect(() => {
     setNum(1);
@@ -134,23 +134,24 @@ const MusicList = (props) => {
         <div className="filter"></div>
       </div>
       <div className="bgLayer"></div>
-      <Scroll
-        listenScroll={true}
-        probeType={3}
-        scroll={scroll}
-        data={songs}
-        classVal={"list"}
-        ref={musicList}
-      >
-        <div className="songListWrapper">
-          <SongList selectItem={selectItem} songs={songs} />
-        </div>
-        {songs.length <= 0 && (
-          <div className="loadingContainer">
-            <Loading />
+        <Scroll
+          listenScroll={true}
+          probeType={3}
+          scroll={scroll}
+          data={songs}
+          classVal={"list"}
+          ref={musicList}
+        >
+          <div className="songListWrapper">
+            <SongList selectItem={selectItem} songs={songs} />
           </div>
-        )}
-      </Scroll>
+          {songs.length <= 0 && (
+            <div className="loadingContainer">
+              <Loading />
+            </div>
+          )}
+        </Scroll>
+      )
     </div>
   );
 };
@@ -169,16 +170,18 @@ MusicList.propTypes = {
   rank: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  fullScreen: state.playerReducer.fullScreen,
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
     selectPlay({ songs, index }) {
       dispatch(actionCreators.selectPlay({ songs, index }));
     },
-    randomPlay(list){
-      dispatch(actionCreators.randomPlay(list))
-    }
+    randomPlay(list) {
+      dispatch(actionCreators.randomPlay(list));
+    },
   };
 };
 

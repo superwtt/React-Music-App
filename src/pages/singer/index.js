@@ -83,11 +83,12 @@ const Singer = (props) => {
     const bottom = playList.length > 0 ? '60px' : '0'
 
     document.getElementsByClassName("singer")[0].style.bottom = bottom
+
     listViewRef.current.refresh()
   };
 
   useEffect(()=>{
-    // handlePlaylist(playList);
+    handlePlaylist(playList);
   },[playList])
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const Singer = (props) => {
       const list = _normalizeSinger(res.data.list);
       setSingers(list);
     });
-    // handlePlaylist(playList);
+    handlePlaylist(playList);
   }, []);
 
   return <div className="singer">

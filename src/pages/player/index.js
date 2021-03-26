@@ -420,7 +420,6 @@ const Player = (props) => {
 
   useEffect(() => {
     songReady = true;
-
     fullScreen ? setPlayNumber(1) : setPlayNumber(0);
   }, [fullScreen]);
 
@@ -490,30 +489,33 @@ const Player = (props) => {
                   <div className="playingLyric">{playingLyric}</div>
                 </div>
               </div>
-              <Scroll
-                classVal={"middle-r"}
-                data={currentLyric ? currentLyric.lines : []}
-                ref={lyricList}
-              >
-                <div className="lyric-wrapper">
-                  {currentLyric && currentLyric.lines && (
-                    <div>
-                      {currentLyric.lines.map((item, index) => {
-                        return (
-                          <p
-                            key={index}
-                            className={`lyricLine text ${
-                              currentLineNum === index ? "current" : ""
-                            }`}
-                          >
-                            {item.txt}
-                          </p>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </Scroll>
+              {currentLyric && (
+                <Scroll
+                  classVal={"middle-r"}
+                  customMade={'lyric'}
+                  data={currentLyric ? currentLyric.lines : []}
+                  ref={lyricList}
+                >
+                  <div className="lyric-wrapper">
+                    {currentLyric && currentLyric.lines && (
+                      <div>
+                        {currentLyric.lines.map((item, index) => {
+                          return (
+                            <p
+                              key={index}
+                              className={`lyricLine text ${
+                                currentLineNum === index ? "current" : ""
+                              }`}
+                            >
+                              {item.txt}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </Scroll>
+              )}
             </div>
             <div className="bottom">
               <div className="dot-wrapper">

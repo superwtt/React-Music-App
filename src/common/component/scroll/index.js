@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useEffect,
   useRef,
   useImperativeHandle,
@@ -16,6 +15,8 @@ let scroll = null;
 const Scroll = forwardRef((props, ref) => {
   const wrapperRef = useRef(null);
 
+  const {customMade} = props;
+
   const bindScroll = () => {
     if (props.listenScroll) {
       scroll &&
@@ -26,7 +27,7 @@ const Scroll = forwardRef((props, ref) => {
   };
 
   const _initScroll = () => {
-    console.log(wrapperRef.current);
+    
     if (!wrapperRef.current) return;
 
     const sc = new BScroll(wrapperRef.current, {
@@ -34,6 +35,7 @@ const Scroll = forwardRef((props, ref) => {
       click: props.click,
     });
     scroll = sc;
+    // console.log(scroll)
     bindScroll();
   };
 
@@ -44,6 +46,7 @@ const Scroll = forwardRef((props, ref) => {
     scroll && scroll.disable();
   };
   const refresh = () => {
+    console.log(scroll)
     scroll && scroll.refresh();
     bindScroll();
   };
@@ -76,11 +79,15 @@ const Scroll = forwardRef((props, ref) => {
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
   useEffect(() => {
     refresh();
-  }, [props.data.length]);
+    // console.log("刷新")
+    // console.log(props.data)
+    // console.log(scroll)
+  }, [props.data]);
 
   // useDeepCompareEffect(() => {
   //   console.log("deep-keys", props.data);
   // }, [props.data]);
+
 
   return (
     <div className={props.classVal} ref={wrapperRef}>
