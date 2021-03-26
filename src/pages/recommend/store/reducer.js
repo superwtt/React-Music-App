@@ -2,7 +2,8 @@ import * as constants from "./actionTypes";
 
 const defaultState = {
   slider:[],
-  discList:[]
+  discList:[],
+  disc:{}
 };
 
 export default (state = defaultState, action) => {
@@ -11,6 +12,8 @@ export default (state = defaultState, action) => {
       return {...state,slider:action.value};
     case constants.GET_DISC_LIST:
       return {...state,discList:action.value};
+    case constants.SET_DISC:
+      return {...state,disc:action.value}  
     default:
       return state;
   }

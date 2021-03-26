@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 
-import { playlistMixin } from "@/common/js/mixin";
+import Disc from '../disc';
 import Scroll from "@/common/component/scroll";
 import Slider from "@/common/component/slider";
 import Loading from "@/common/component/loading";
@@ -10,6 +10,11 @@ import * as actionCreators from "./store/actionCreators";
 import "./index.less";
 
 const Recommend = (props) => {
+
+  // let match = useRouteMatch();
+
+
+  const [showDisc,setShowDisc] = useState(false);
   const { slider, discList,playList } = props;
 
   const recommendContent = useRef(null);
@@ -45,6 +50,20 @@ const Recommend = (props) => {
     recommendContent.current.refresh()
   };
 
+  const selectItem = (item)=>{
+    console.log("dd")
+    props.setDisc(item)
+    setShowDisc(true)
+    // props.history.push(`/recommend/${item.dissid}`)
+  }
+
+  const hide = ()=>{
+    setTimeout(()=>{
+      setShowDisc(false)
+    },300)
+    
+  }
+
   useEffect(() => {
     initData();
     handlePlaylist(playList);
@@ -65,7 +84,7 @@ const Recommend = (props) => {
               {discList &&
                 discList.map((item) => {
                   return (
-                    <li className="item" key={item.dissid}>
+                    <li className="item" key={item.dissid} onClick={()=>selectItem(item)}>
                       <div className="icon">
                         <img width="60" height="60" src={item.imgurl} alt="" />
                       </div>
@@ -85,6 +104,13 @@ const Recommend = (props) => {
           <Loading />
         </div>
       )}
+
+      {/* <Route path={match.path}>
+          <h3>Please select a topic.</h3>
+        </Route> */}
+       {
+         showDisc&&<Disc showDisc={showDisc} hide={hide} />
+       }
     </div>
   );
 };
@@ -105,6 +131,9 @@ const mapDispatchToProps = (dispatch) => {
     getDiscList() {
       return dispatch(actionCreators.getDiscList());
     },
+    setDisc(disc){
+      dispatch(actionCreators.setDisc(disc))
+    }
   };
 };
 

@@ -46,7 +46,7 @@ const Scroll = forwardRef((props, ref) => {
     scroll && scroll.disable();
   };
   const refresh = () => {
-    console.log(scroll)
+    // console.log(scroll)
     scroll && scroll.refresh();
     bindScroll();
   };

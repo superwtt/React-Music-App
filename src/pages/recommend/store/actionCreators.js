@@ -37,3 +37,12 @@ export const getDiscList = () => {
     });
   };
 };
+
+export const setDisc = (disc)=>{
+  return (dispatch)=>{
+    dispatch({
+      type:constants.SET_DISC,
+      value:disc
+    })
+  }
+}

@@ -30,6 +30,7 @@ const RouterConfig = () => {
     <HashRouter forceRefresh={true}>
       <Switch>
         <Route path="/recommend" component={Recommend} />
+        {/* <Route path="/recommend/:id" component={Disc} /> */}
         <Route exact path='/singer' component={Singer}/>
         {/* <Route path="/singer/:id" component={SingerDetail} /> */}
         <Route path="/rank" component={Rank} />

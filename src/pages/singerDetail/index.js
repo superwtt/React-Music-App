@@ -22,10 +22,10 @@ const SingerDetail = (props) => {
     return ret;
   };
 
-  const back = ()=>{
-    setNumber(0)
+  const back = () => {
+    setNumber(0);
     props.hide();
-  }
+  };
 
   useEffect(() => {
     const { showDetail } = props;
@@ -41,14 +41,14 @@ const SingerDetail = (props) => {
 
   return (
     // <TransitionGroup>
-      <CSSTransition in={number?true:false} timeout={300} classNames="app2">
-        <MusicList
-          hide={back}
-          songs={songs}
-          bgImage={props.singer.avatar}
-          title={props.singer.name}
-        />
-      </CSSTransition>
+    <CSSTransition in={number ? true : false} timeout={300} classNames="app2">
+      <MusicList
+        hide={back}
+        songs={songs}
+        bgImage={props.singer.avatar}
+        title={props.singer.name}
+      />
+    </CSSTransition>
     // </TransitionGroup>
   );
 };
