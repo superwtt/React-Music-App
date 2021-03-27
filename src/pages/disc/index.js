@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 
+import {createSong,processSongsUrl} from '@/common/js/song';
 import {getSongList} from '@/services/recommend';
+import {ERR_OK} from '@/services/config';
 import MusicList from "../musicList";
 import "./index.less";
 
@@ -17,12 +19,26 @@ const Disc = (props) => {
     props.hide();
   };
 
+  const _normalizeSongs = (list)=>{
+    let ret = [];
+    list.forEach(musicData=>{
+      if(musicData.songid&&musicData.albumid){
+        ret.push(createSong(musicData))
+      }
+    })
+    return ret
+  }
+
   useEffect(() => {
     const { showDisc } = props;
     showDisc ? setNumber(1) : setNumber(0);
 
-    getSongList(disc.dissid).then(res=>{
-      console.log(res)
+    getSongList(disc.dissid).then(res=>{      
+      if (res.code === ERR_OK) {
+        processSongsUrl(_normalizeSongs(res.cdlist[0].songlist)).then((songs) => {
+          setSongs(songs);
+        })
+      }
     })
 
   }, []);
@@ -34,6 +50,7 @@ const Disc = (props) => {
         songs={[]}
         bgImage={disc.imgurl}
         title={disc.dissname}
+        songs={songs}
       />
     </CSSTransition>
   );
