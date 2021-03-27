@@ -51,7 +51,6 @@ const Recommend = (props) => {
   };
 
   const selectItem = (item)=>{
-    console.log("dd")
     props.setDisc(item)
     setShowDisc(true)
     // props.history.push(`/recommend/${item.dissid}`)

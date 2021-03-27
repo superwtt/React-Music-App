@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 
+import {getSongList} from '@/services/recommend';
 import MusicList from "../musicList";
 import "./index.less";
 
@@ -19,6 +20,11 @@ const Disc = (props) => {
   useEffect(() => {
     const { showDisc } = props;
     showDisc ? setNumber(1) : setNumber(0);
+
+    getSongList(disc.dissid).then(res=>{
+      console.log(res)
+    })
+
   }, []);
 
   return (
