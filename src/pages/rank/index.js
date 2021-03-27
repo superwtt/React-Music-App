@@ -71,7 +71,7 @@ const Rank = (props) => {
       </Scroll>
 
       {
-        showTopList&&<TopList showTopList={showTopList} hide={hide} />
+        showTopList&&<TopList rank={true} showTopList={showTopList} hide={hide} />
       }
     </div>
   );

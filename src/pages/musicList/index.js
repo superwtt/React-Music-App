@@ -20,7 +20,7 @@ const MusicList = (props) => {
   const [scrollY, setScrollY] = useState(0);
   const [num, setNum] = useState(-1);
 
-  const { songs, fullScreen } = props;
+  const { songs,rank } = props;
 
   const musicList = useRef(null);
 
@@ -143,7 +143,7 @@ const MusicList = (props) => {
           ref={musicList}
         >
           <div className="songListWrapper">
-            <SongList selectItem={selectItem} songs={songs} />
+            <SongList rank={rank} selectItem={selectItem} songs={songs} />
           </div>
           {songs.length <= 0 && (
             <div className="loadingContainer">
