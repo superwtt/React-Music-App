@@ -46,3 +46,12 @@ export const setDisc = (disc)=>{
     })
   }
 }
+
+export const setTopList = (topList)=>{
+  return (dispatch)=>{
+    dispatch({
+      type:constants.SET_TOPLIST,
+      value:topList
+    })
+  }
+}

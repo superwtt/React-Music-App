@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 
-import {createSong,processSongsUrl} from '@/common/js/song';
-import {getSongList} from '@/services/recommend';
-import {ERR_OK} from '@/services/config';
+import { createSong, processSongsUrl } from "@/common/js/song";
+import { getSongList } from "@/services/recommend";
+import { ERR_OK } from "@/services/config";
 import MusicList from "../musicList";
 import "./index.less";
 
@@ -19,28 +19,29 @@ const Disc = (props) => {
     props.hide();
   };
 
-  const _normalizeSongs = (list)=>{
+  const _normalizeSongs = (list) => {
     let ret = [];
-    list.forEach(musicData=>{
-      if(musicData.songid&&musicData.albumid){
-        ret.push(createSong(musicData))
+    list.forEach((musicData) => {
+      if (musicData.songid && musicData.albumid) {
+        ret.push(createSong(musicData));
       }
-    })
-    return ret
-  }
+    });
+    return ret;
+  };
 
   useEffect(() => {
     const { showDisc } = props;
     showDisc ? setNumber(1) : setNumber(0);
 
-    getSongList(disc.dissid).then(res=>{      
+    getSongList(disc.dissid).then((res) => {
       if (res.code === ERR_OK) {
-        processSongsUrl(_normalizeSongs(res.cdlist[0].songlist)).then((songs) => {
-          setSongs(songs);
-        })
+        processSongsUrl(_normalizeSongs(res.cdlist[0].songlist)).then(
+          (songs) => {
+            setSongs(songs);
+          }
+        );
       }
-    })
-
+    });
   }, []);
 
   return (
@@ -57,7 +58,7 @@ const Disc = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-    disc: state.recommendReducer.disc,
+  disc: state.recommendReducer.disc,
 });
 const mapDispatchToProps = (dispatch) => ({});
 
