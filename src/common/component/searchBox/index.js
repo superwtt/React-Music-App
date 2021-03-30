@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import "./index.less"
 
@@ -11,5 +12,13 @@ const SearchBox = (props) => {
     </div>
   );
 };
+
+SearchBox.defaultProps = {
+  placeholder:"搜索歌曲、歌手"
+}
+
+SearchBox.propTypes = {
+  placeholder: PropTypes.string
+}
 
 export default SearchBox;
