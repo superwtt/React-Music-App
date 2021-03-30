@@ -15,8 +15,6 @@ let scroll = null;
 const Scroll = forwardRef((props, ref) => {
   const wrapperRef = useRef(null);
 
-  const {customMade} = props;
-
   const bindScroll = () => {
     if (props.listenScroll) {
       scroll &&
@@ -25,6 +23,16 @@ const Scroll = forwardRef((props, ref) => {
         });
     }
   };
+
+  const pullup = ()=>{
+    if(props.pullup){
+      scroll.on("scrollEnd",()=>{
+        if(scroll.y<=scroll.maxScrollY+50){
+          props.scrollToEnd();
+        }
+      })
+    }
+  }
 
   const _initScroll = () => {
     
@@ -37,6 +45,8 @@ const Scroll = forwardRef((props, ref) => {
     scroll = sc;
     // console.log(scroll)
     bindScroll();
+
+    pullup(); // 滚动到底部的事件
   };
 
   const enable = () => {
@@ -103,6 +113,7 @@ Scroll.propTypes = {
   click: PropTypes.bool,
   data: PropTypes.array,
   listenScroll: PropTypes.bool,
+  pullup: PropTypes.bool
 };
 
 Scroll.defaultProps = {
@@ -110,6 +121,7 @@ Scroll.defaultProps = {
   click: true,
   data: null,
   listenScroll: false,
+  pullup: false
 };
 
 export default Scroll;

@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import { filterSinger } from "@/common/js/song";
+import Loading from "@/common/component/loading";
+import Scroll from "@/common/component/scroll";
+import { createSong } from "@/common/js/song";
 import { ERR_OK } from "@/services/config";
 import { search } from "@/services/search";
 import "./index.less";
 
 const TYPE_SINGER = "singer";
+const perpage = 20;
+let page = 1;
+let hasMore = true;
 
 const Suggest = (props) => {
-  const [page, setPage] = useState(1);
   const [result, setResult] = useState([]);
+  const [pullup, setPullUp] = useState(true);
 
   const { query, showSinger } = props;
+
+  const _normalizeSongs = (list) => {
+    let ret = [];
+    list.forEach((musicData) => {
+      if (musicData.songid && musicData.albumid) {
+        ret.push(createSong(musicData));
+      }
+    });
+    return ret;
+  };
 
   const _getResult = (data) => {
     let ret = [];
@@ -20,7 +35,7 @@ const Suggest = (props) => {
       ret.push({ ...data.zhida, ...{ type: TYPE_SINGER } });
     }
     if (data.song) {
-      ret = ret.concat(data.song.list);
+      ret = ret.concat(_normalizeSongs(data.song.list));
     }
     return ret;
   };
@@ -37,20 +52,48 @@ const Suggest = (props) => {
     if (item.type === TYPE_SINGER) {
       return item.singername;
     } else {
-      return `${item.songname}-${filterSinger(item.singer)}`;
+      return `${item.name}-${item.singer}`;
     }
   };
 
-  useEffect(() => {
-    search(query, page, showSinger).then((res) => {
+  const searchFn = () => {
+    search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
         setResult(_getResult(res.data));
+        _checkMore(res.data);
       }
     });
+  };
+
+  const _checkMore = (data) => {
+    const song = data.song;
+    if (
+      !song.list.lengh ||
+      song.curnum + song.curpage * perpage > song.totalnum
+    ) {
+      hasMore = false
+    }
+  };
+
+  const searchMore = () => {
+      debugger
+    if (!hasMore) return;
+    page++;
+    console.log(page)
+    search(query, page, showSinger, perpage).then((res) => {
+      if(res.code===ERR_OK){
+        setResult(result.concat(_getResult(res.data)));
+        _checkMore(res.data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    searchFn();
   }, [query]);
 
   return (
-    <div className="suggest">
+    <Scroll classVal={"suggest"} pullup={pullup} scrollToEnd={searchMore} data={result}>
       <ul className="suggest-list">
         {result.map((item, index) => {
           return (
@@ -64,8 +107,12 @@ const Suggest = (props) => {
             </li>
           );
         })}
+        {
+          hasMore&&<Loading title="" />
+        }
       </ul>
-    </div>
+      
+    </Scroll>
   );
 };
 

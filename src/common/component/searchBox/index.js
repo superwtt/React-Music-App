@@ -9,6 +9,7 @@ const SearchBox = (props) => {
 
   const handleQueryChange = (e) => {
     const val = e.target.value;
+    getQuery(val);
     setQueryFromState(val);
   };
 
@@ -17,9 +18,8 @@ const SearchBox = (props) => {
   };
 
   useEffect(() => {
-    getQuery(query);
     setQueryFromState(query);
-  }, [query]);
+  }, []);
 
   return (
     <div className="search-box">
