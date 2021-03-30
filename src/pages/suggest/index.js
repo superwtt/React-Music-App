@@ -11,7 +11,7 @@ import "./index.less";
 const TYPE_SINGER = "singer";
 const perpage = 20;
 let page = 1;
-let hasMore = true;
+let hasMore = false;
 
 const Suggest = (props) => {
   const [result, setResult] = useState([]);
@@ -57,10 +57,14 @@ const Suggest = (props) => {
   };
 
   const searchFn = () => {
+    hasMore = true;
+    page = 1;
     search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
         setResult(_getResult(res.data));
-        _checkMore(res.data);
+        setTimeout(()=>{
+           _checkMore(res.data);
+        },20)
       }
     });
   };
@@ -68,22 +72,22 @@ const Suggest = (props) => {
   const _checkMore = (data) => {
     const song = data.song;
     if (
-      !song.list.lengh ||
+      !song.list.length ||
       song.curnum + song.curpage * perpage > song.totalnum
     ) {
-      hasMore = false
+      hasMore = false;
     }
   };
 
   const searchMore = () => {
-      debugger
     if (!hasMore) return;
     page++;
-    console.log(page)
     search(query, page, showSinger, perpage).then((res) => {
-      if(res.code===ERR_OK){
+      if (res.code === ERR_OK) {
         setResult(result.concat(_getResult(res.data)));
-        _checkMore(res.data);
+        setTimeout(()=>{
+            _checkMore(res.data);
+         },20)
       }
     });
   };
@@ -93,7 +97,12 @@ const Suggest = (props) => {
   }, [query]);
 
   return (
-    <Scroll classVal={"suggest"} pullup={pullup} scrollToEnd={searchMore} data={result}>
+    <Scroll
+      classVal={"suggest"}
+      pullup={pullup}
+      scrollToEnd={searchMore}
+      data={result}
+    >
       <ul className="suggest-list">
         {result.map((item, index) => {
           return (
@@ -107,11 +116,8 @@ const Suggest = (props) => {
             </li>
           );
         })}
-        {
-          hasMore&&<Loading title="" />
-        }
+        {hasMore && <Loading title="" />}
       </ul>
-      
     </Scroll>
   );
 };
