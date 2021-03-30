@@ -1,24 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import "./index.less"
+import "./index.less";
 
 const SearchBox = (props) => {
+  const [query, setQuery] = useState("");
+  const { placeholder } = props;
+
+  const handleQueryChange = e=>{
+    const val = e.target.value
+    setQuery(val)
+  }
+
+  const clearQuery = ()=>{
+    setQuery('')
+  }
+
+  useEffect(()=>{
+    
+  },[query])
+
   return (
     <div className="search-box">
       <i className="icon-search"></i>
-      <input className="box" type="text" />
-      <i className="icon-dismiss"></i>
+      <input className="box" type="text" value={query} placeholder={placeholder} onChange={handleQueryChange} />
+      {query && <i onClick={clearQuery} className="icon-dismiss"></i>}
     </div>
   );
 };
 
 SearchBox.defaultProps = {
-  placeholder:"搜索歌曲、歌手"
-}
+  placeholder: "搜索歌曲、歌手",
+};
 
 SearchBox.propTypes = {
-  placeholder: PropTypes.string
-}
+  placeholder: PropTypes.string,
+};
 
 export default SearchBox;
