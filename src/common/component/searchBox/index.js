@@ -4,26 +4,33 @@ import PropTypes from "prop-types";
 import "./index.less";
 
 const SearchBox = (props) => {
-  const [query, setQuery] = useState("");
-  const { placeholder } = props;
+  const [queryFromState, setQueryFromState] = useState("");
+  const { placeholder, getQuery, query } = props;
 
-  const handleQueryChange = e=>{
-    const val = e.target.value
-    setQuery(val)
-  }
+  const handleQueryChange = (e) => {
+    const val = e.target.value;
+    setQueryFromState(val);
+  };
 
-  const clearQuery = ()=>{
-    setQuery('')
-  }
+  const clearQuery = () => {
+    setQueryFromState("");
+  };
 
-  useEffect(()=>{
-    
-  },[query])
+  useEffect(() => {
+    getQuery(query);
+    setQueryFromState(query);
+  }, [query]);
 
   return (
     <div className="search-box">
       <i className="icon-search"></i>
-      <input className="box" type="text" value={query} placeholder={placeholder} onChange={handleQueryChange} />
+      <input
+        className="box"
+        type="text"
+        value={queryFromState}
+        placeholder={placeholder}
+        onChange={handleQueryChange}
+      />
       {query && <i onClick={clearQuery} className="icon-dismiss"></i>}
     </div>
   );
