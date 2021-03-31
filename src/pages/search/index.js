@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
+import { debounce } from "@/common/js/util";
 import Suggest from "@/pages/suggest";
 import { ERR_OK } from "@/services/config";
 import { getHotKey } from "@/services/search";
@@ -10,13 +11,20 @@ const Search = (props) => {
   const [hotKey, setHotKey] = useState([]);
   const [query, setQuery] = useState("");
 
-  const getQuery = (query) => {
+  const box = useRef(null);
+
+  const getQuery = debounce((query) => {
     setQuery(query);
-  };
+  }, 200);
 
   const selectItem = (item) => {
     setQuery(item.k);
   };
+
+  // 让鼠标失去焦点 移动端收起键盘
+  const beforeScrollStart = ()=>{
+    props.blur();
+  }
 
   useEffect(() => {
     getHotKey().then((res) => {
@@ -32,7 +40,7 @@ const Search = (props) => {
   return (
     <div className="search">
       <div className="search-box-wrapper">
-        <SearchBox query={query} getQuery={getQuery} />
+        <SearchBox ref={box} query={query} getQuery={getQuery} />
       </div>
       {!query && (
         <div className="shortcut-wrapper">
@@ -60,7 +68,7 @@ const Search = (props) => {
       )}
       {query && (
         <div className="search-result">
-          <Suggest query={query} />
+          <Suggest beforeScrollStart={beforeScrollStart} query={query} />
         </div>
       )}
     </div>

@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
+import NoResult from "@/common/component/noResult";
+import * as actionCreators from "@/pages/player/store/actionCreators";
 import Loading from "@/common/component/loading";
 import Scroll from "@/common/component/scroll";
-import { createSong } from "@/common/js/song";
+import { createSong, processSongsUrl } from "@/common/js/song";
 import { ERR_OK } from "@/services/config";
 import { search } from "@/services/search";
 import "./index.less";
@@ -32,11 +35,13 @@ const Suggest = (props) => {
   const suggest = useRef(null);
   const resultRef = useRef(null);
 
+  const [noSource, setNoSource] = useState(false);
+  const [title, setTitle] = useState("抱歉，暂无搜索结果");
   const [result, setResult] = useState([]);
   const [pullup, setPullUp] = useState(true);
   const [hasMoreFromState, setHasMoreFromState] = useState(false);
 
-  const { query, showSinger } = props;
+  const { query, showSinger, playList, sequenceList, currentIndex } = props;
 
   const _normalizeSongs = (list) => {
     let ret = [];
@@ -79,7 +84,7 @@ const Suggest = (props) => {
     hasMore = true;
     setHasMoreFromState(true);
     page = 1;
-    suggest.current.scrollTo(0,0)
+    suggest.current.scrollTo(0, 0);
     search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
         setResult(_getResult(res.data));
@@ -96,7 +101,7 @@ const Suggest = (props) => {
       !song.list.length ||
       song.curnum + song.curpage * perpage >= song.totalnum
     ) {
-      hasMore = false  
+      hasMore = false;
       setHasMoreFromState(false);
     }
   };
@@ -112,15 +117,31 @@ const Suggest = (props) => {
         }, 20);
       }
     });
-  },[result]);
+  }, [result]);
+
+  const selectItem = (item) => {
+    processSongsUrl([item])
+      .then((songs) => {
+        setNoSource(false);
+        const song = songs[0];
+        props.insetSong(song, playList, sequenceList, currentIndex);
+      })
+      .catch((err) => {
+        setTitle("暂无播放源");
+        setNoSource(true);
+      });
+  };
+
+  const beforeScrollStart = ()=>{
+     props.beforeScrollStart() 
+  }
 
   useEffect(() => {
     searchFn();
   }, [query]);
 
   useEffect(() => {
-    console.log(result)
-    resultRef.current = result
+    resultRef.current = result;
   }, [result]);
 
   return (
@@ -130,22 +151,31 @@ const Suggest = (props) => {
       scrollToEnd={searchMore}
       data={result}
       ref={suggest}
+      beforeScroll={true}
+      beforeScrollStart={beforeScrollStart}
     >
-      <ul className="suggest-list">
-        {result.map((item, index) => {
-          return (
-            <li className="suggest-item">
-              <div className="icon">
-                <i className={`${getIconCls(item)}`}></i>
-              </div>
-              <div className="name">
-                <p className="text">{getDisplayName(item)}</p>
-              </div>
-            </li>
-          );
-        })}
-        {hasMoreFromState && (<Loading title="" />)}
-      </ul>
+      {!noSource && (
+        <ul className="suggest-list">
+          {result.map((item, index) => {
+            return (
+              <li className="suggest-item" onClick={() => selectItem(item)}>
+                <div className="icon">
+                  <i className={`${getIconCls(item)}`}></i>
+                </div>
+                <div className="name">
+                  <p className="text">{getDisplayName(item)}</p>
+                </div>
+              </li>
+            );
+          })}
+          {hasMoreFromState && <Loading title="" />}
+        </ul>
+      )}
+      {noSource && (
+        <div className="no-result-wrapper">
+          <NoResult title={title} />
+        </div>
+      )}
     </Scroll>
   );
 };
@@ -160,4 +190,20 @@ PropTypes.propTypes = {
   showSinger: PropTypes.bool,
 };
 
-export default Suggest;
+const mapStateToProps = (state) => ({
+  playList: state.playerReducer.playList,
+  sequenceList: state.playerReducer.sequenceList,
+  currentIndex: state.playerReducer.currentIndex,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    insetSong(song, playList, sequenceList, currentIndex) {
+      dispatch(
+        actionCreators.insertSong(song, playList, sequenceList, currentIndex)
+      );
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Suggest);

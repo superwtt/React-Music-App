@@ -12,3 +12,19 @@ export function shuffle(arr) {
   }
   return _arr;
 }
+
+// 函数珂理化 调一个函数 返回另外一个函数
+export function debounce (func, delay) {
+
+  let timer
+
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      console.log(delay)
+      func.apply(this, args)
+    }, delay)
+  }
+}

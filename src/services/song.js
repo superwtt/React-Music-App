@@ -82,7 +82,9 @@ export function getSongsUrl (songs) {
       if (--tryTime >= 0) {
         request()
       } else {
-        reject(new Error('Can not get the songs url'))
+        console.log("暂无播放源")
+        reject()
+        // reject(new Error('Can not get the songs url'))
       }
     }
 

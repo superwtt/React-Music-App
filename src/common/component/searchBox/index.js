@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import "./index.less";
@@ -6,6 +6,8 @@ import "./index.less";
 const SearchBox = (props) => {
   const [queryFromState, setQueryFromState] = useState("");
   const { placeholder, getQuery, query } = props;
+
+  const blurInput = useRef(null);
 
   const handleQueryChange = (e) => {
     const val = e.target.value;
@@ -18,6 +20,10 @@ const SearchBox = (props) => {
     getQuery("");
   };
 
+  const blur = ()=>{
+    blurInput.current.blur()
+  }
+
   useEffect(() => {
     setQueryFromState(query);
   }, []);
@@ -26,11 +32,13 @@ const SearchBox = (props) => {
     <div className="search-box">
       <i className="icon-search"></i>
       <input
+        ref={blurInput}
         className="box"
         type="text"
         value={queryFromState}
         placeholder={placeholder}
         onChange={handleQueryChange}
+        blur={blur}
       />
       {query && <i onClick={clearQuery} className="icon-dismiss"></i>}
     </div>

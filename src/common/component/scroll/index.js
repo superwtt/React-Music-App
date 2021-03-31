@@ -34,6 +34,14 @@ const Scroll = forwardRef((props, ref) => {
     }
   }
 
+  const beforeScroll = ()=>{
+    if(props.beforeScroll){
+      scroll.on("beforeScrollStart",()=>{
+        console.log("beforeScrollStart")
+      })
+    }
+  }
+
   const _initScroll = () => {
     
     if (!wrapperRef.current) return;
@@ -47,6 +55,8 @@ const Scroll = forwardRef((props, ref) => {
     bindScroll();
 
     pullup(); // 滚动到底部的事件
+
+    beforeScroll(); // 滚动开始之前收起键盘
   };
 
   const enable = () => {
@@ -113,7 +123,8 @@ Scroll.propTypes = {
   click: PropTypes.bool,
   data: PropTypes.array,
   listenScroll: PropTypes.bool,
-  pullup: PropTypes.bool
+  pullup: PropTypes.bool,
+  beforeScroll: PropTypes.bool
 };
 
 Scroll.defaultProps = {
@@ -121,7 +132,8 @@ Scroll.defaultProps = {
   click: true,
   data: null,
   listenScroll: false,
-  pullup: false
+  pullup: false,
+  beforeScroll: false
 };
 
 export default Scroll;
