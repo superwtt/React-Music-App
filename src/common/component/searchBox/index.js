@@ -15,6 +15,7 @@ const SearchBox = (props) => {
 
   const clearQuery = () => {
     setQueryFromState("");
+    getQuery("");
   };
 
   useEffect(() => {

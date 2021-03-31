@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import Loading from "@/common/component/loading";
@@ -11,11 +11,13 @@ import "./index.less";
 const TYPE_SINGER = "singer";
 const perpage = 20;
 let page = 1;
-let hasMore = false;
 
 const Suggest = (props) => {
+  const suggest = useRef(null);
+
   const [result, setResult] = useState([]);
   const [pullup, setPullUp] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
 
   const { query, showSinger } = props;
 
@@ -57,14 +59,15 @@ const Suggest = (props) => {
   };
 
   const searchFn = () => {
-    hasMore = true;
+    setHasMore(true);
     page = 1;
+    suggest.current.scrollTo(0,0)
     search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
         setResult(_getResult(res.data));
-        setTimeout(()=>{
-           _checkMore(res.data);
-        },20)
+        setTimeout(() => {
+          _checkMore(res.data);
+        }, 20);
       }
     });
   };
@@ -73,9 +76,9 @@ const Suggest = (props) => {
     const song = data.song;
     if (
       !song.list.length ||
-      song.curnum + song.curpage * perpage > song.totalnum
+      song.curnum + song.curpage * perpage >= song.totalnum
     ) {
-      hasMore = false;
+      setHasMore(false);
     }
   };
 
@@ -85,9 +88,9 @@ const Suggest = (props) => {
     search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
         setResult(result.concat(_getResult(res.data)));
-        setTimeout(()=>{
-            _checkMore(res.data);
-         },20)
+        setTimeout(() => {
+          _checkMore(res.data);
+        }, 20);
       }
     });
   };
@@ -102,6 +105,7 @@ const Suggest = (props) => {
       pullup={pullup}
       scrollToEnd={searchMore}
       data={result}
+      ref={suggest}
     >
       <ul className="suggest-list">
         {result.map((item, index) => {
@@ -116,7 +120,7 @@ const Suggest = (props) => {
             </li>
           );
         })}
-        {hasMore && <Loading title="" />}
+        {hasMore && (<Loading title="" />)}
       </ul>
     </Scroll>
   );
