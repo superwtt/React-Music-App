@@ -1,6 +1,7 @@
 import * as constants from "./actionTypes";
 import { playMode } from "@/common/js/config";
 import { shuffle } from "@/common/js/util";
+import {saveSearch} from "@/common/js/cache";
 
 let mode = 0;
 
@@ -220,3 +221,13 @@ export const insertSong = (song,playList,sequenceList,currentIndex) => {
 
   };
 };
+
+
+export const saveSearchHistory = (query)=>{
+  return dispatch=>{
+    dispatch({
+      type:constants.SET_SEARCH_HISTORY,
+      value:saveSearch(query)
+    })
+  }
+}

@@ -1,5 +1,6 @@
 import { playMode } from "@/common/js/config";
 import * as constants from "./actionTypes";
+import {loadSearch} from "@/common/js/cache";
 
 const defaultState = {
   singer: {},
@@ -10,6 +11,7 @@ const defaultState = {
   mode: playMode.sequence, // 播放模式
   currentIndex: -1, // 当前播放歌曲的索引
   currentSong: {}, // 当前播放歌曲
+  searchHistory: loadSearch(), // 搜索历史
 };
 
 export default (state = defaultState, action) => {
@@ -29,8 +31,10 @@ export default (state = defaultState, action) => {
     case constants.SET_CURRENT_INDEX:
       return { ...state, currentIndex: action.value };
     case constants.SET_CURRENT_SONG:
-      console.log(state.playList[action.value])
       return { ...state, currentSong: state.playList[action.value] };
+    case constants.SET_SEARCH_HISTORY:
+      console.log(action.value)
+      return { ...state, searchHistory: action.value };
     default:
       return state;
   }

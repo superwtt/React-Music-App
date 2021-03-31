@@ -37,7 +37,7 @@ const Scroll = forwardRef((props, ref) => {
   const beforeScroll = ()=>{
     if(props.beforeScroll){
       scroll.on("beforeScrollStart",()=>{
-        console.log("beforeScrollStart")
+        // console.log("beforeScrollStart")
       })
     }
   }

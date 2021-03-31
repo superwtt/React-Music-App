@@ -130,11 +130,13 @@ const Suggest = (props) => {
         setTitle("暂无播放源");
         setNoSource(true);
       });
+
+    props.saveSearchHistory(item);
   };
 
-  const beforeScrollStart = ()=>{
-     props.beforeScrollStart() 
-  }
+  const beforeScrollStart = () => {
+    props.beforeScrollStart();
+  };
 
   useEffect(() => {
     searchFn();

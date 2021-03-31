@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
 
+import * as actionCreators from "@/pages/player/store/actionCreators"
 import { debounce } from "@/common/js/util";
 import Suggest from "@/pages/suggest";
 import { ERR_OK } from "@/services/config";
@@ -22,9 +24,13 @@ const Search = (props) => {
   };
 
   // 让鼠标失去焦点 移动端收起键盘
-  const beforeScrollStart = ()=>{
+  const beforeScrollStart = () => {
     props.blur();
-  }
+  };
+
+  const saveSearchHistory = (item) => {
+    props.saveSearch(item)
+  };
 
   useEffect(() => {
     getHotKey().then((res) => {
@@ -68,11 +74,23 @@ const Search = (props) => {
       )}
       {query && (
         <div className="search-result">
-          <Suggest beforeScrollStart={beforeScrollStart} query={query} />
+          <Suggest
+            beforeScrollStart={beforeScrollStart}
+            query={query}
+            saveSearchHistory={saveSearchHistory}
+          />
         </div>
       )}
     </div>
   );
 };
 
-export default Search;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveSearch(item) {
+      dispatch(actionCreators.saveSearchHistory(item))
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Search);
