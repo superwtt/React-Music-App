@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import Loading from "@/common/component/loading";
@@ -12,12 +12,29 @@ const TYPE_SINGER = "singer";
 const perpage = 20;
 let page = 1;
 
+let hasMore = false;
+
+// function useCallbackState(state){
+//     const cbRef = useRef();
+//     const [data,setData] = useState(state);
+
+//     useEffect(()=>{
+//       cbRef.current&&cbRef.current(data)
+//     },[data])
+
+//     return [data,function(val,callback){
+//         cbRef.current = callback;
+//         setData(val);
+//     }]
+// }
+
 const Suggest = (props) => {
   const suggest = useRef(null);
+  const resultRef = useRef(null);
 
   const [result, setResult] = useState([]);
   const [pullup, setPullUp] = useState(true);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMoreFromState, setHasMoreFromState] = useState(false);
 
   const { query, showSinger } = props;
 
@@ -59,7 +76,8 @@ const Suggest = (props) => {
   };
 
   const searchFn = () => {
-    setHasMore(true);
+    hasMore = true;
+    setHasMoreFromState(true);
     page = 1;
     suggest.current.scrollTo(0,0)
     search(query, page, showSinger, perpage).then((res) => {
@@ -78,26 +96,32 @@ const Suggest = (props) => {
       !song.list.length ||
       song.curnum + song.curpage * perpage >= song.totalnum
     ) {
-      setHasMore(false);
+      hasMore = false  
+      setHasMoreFromState(false);
     }
   };
 
-  const searchMore = () => {
+  const searchMore = useCallback(() => {
     if (!hasMore) return;
     page++;
     search(query, page, showSinger, perpage).then((res) => {
       if (res.code === ERR_OK) {
-        setResult(result.concat(_getResult(res.data)));
+        setResult(resultRef.current.concat(_getResult(res.data)));
         setTimeout(() => {
           _checkMore(res.data);
         }, 20);
       }
     });
-  };
+  },[result]);
 
   useEffect(() => {
     searchFn();
   }, [query]);
+
+  useEffect(() => {
+    console.log(result)
+    resultRef.current = result
+  }, [result]);
 
   return (
     <Scroll
@@ -120,7 +144,7 @@ const Suggest = (props) => {
             </li>
           );
         })}
-        {hasMore && (<Loading title="" />)}
+        {hasMoreFromState && (<Loading title="" />)}
       </ul>
     </Scroll>
   );
