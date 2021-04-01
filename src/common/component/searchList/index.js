@@ -6,9 +6,14 @@ import "./index.less";
 const SearchList = (props) => {
   const { searches } = props;
 
-  const selectItem = (item) => {};
+  const selectListItem = (item) => {
+      props.selectListItem(item)
+  };
 
-  const deleteItem = (e, item) => {};
+  const deleteListItem = (e, item) => {
+    e.stopPropagation()
+    props.deleteListItem(item)
+  };
 
   return (
     <div className="search-list">
@@ -17,7 +22,7 @@ const SearchList = (props) => {
           searches.map((item, index) => {
             return (
               <li
-                onClick={() => selectItem(item)}
+                onClick={() => selectListItem(item)}
                 className="search-item"
                 key={index}
               >
@@ -25,7 +30,7 @@ const SearchList = (props) => {
                 <span
                   className="icon"
                   onClick={(e) => {
-                    deleteItem(e, item);
+                    deleteListItem(e, item);
                   }}
                 >
                   <i className="icon-delete"></i>

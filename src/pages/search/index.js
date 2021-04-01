@@ -24,6 +24,7 @@ const Search = (props) => {
 
   const selectItem = (item) => {
     setQuery(item.k);
+    props.saveSearch(item.k);
   };
 
   // 让鼠标失去焦点 移动端收起键盘
@@ -34,6 +35,18 @@ const Search = (props) => {
   const saveSearchHistory = (item) => {
     props.saveSearch(item.name);
   };
+
+  const selectListItem = (item)=>{
+    setQuery(item);
+  }
+
+  const clear = ()=>{
+    props.clearSearchHistory();
+  }
+
+  const deleteListItem = (item)=>{
+    props.deleteSearchHistory(item)
+  }
 
   useEffect(() => {
     getHotKey().then((res) => {
@@ -76,11 +89,11 @@ const Search = (props) => {
               <div className="search-history">
                 <h1 className="title">
                   <span className="text">搜索历史</span>
-                  <span className="clear">
+                  <span className="clear" onClick={clear}>
                     <i className="icon-clear"></i>
                   </span>
                 </h1>
-                <SearchList searches={searchHistory} />
+                <SearchList selectListItem={selectListItem} deleteListItem={deleteListItem} searches={searchHistory} />
               </div>
             )}
           </div>
@@ -107,6 +120,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     saveSearch(item) {
       dispatch(actionCreators.saveSearchHistory(item));
+    },
+    deleteSearchHistory(item){
+      dispatch(actionCreators.deleteSearchHistory(item));
+    },
+    clearSearchHistory(item){
+      dispatch(actionCreators.clearSearchHistory());
     },
   };
 };

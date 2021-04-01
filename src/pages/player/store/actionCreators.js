@@ -1,7 +1,7 @@
 import * as constants from "./actionTypes";
 import { playMode } from "@/common/js/config";
 import { shuffle } from "@/common/js/util";
-import {saveSearch} from "@/common/js/cache";
+import {saveSearch,deleteSearch,clearSearch} from "@/common/js/cache";
 
 let mode = 0;
 
@@ -228,6 +228,24 @@ export const saveSearchHistory = (query)=>{
     dispatch({
       type:constants.SET_SEARCH_HISTORY,
       value:saveSearch(query)
+    })
+  }
+}
+
+export const deleteSearchHistory = (query)=>{
+  return dispatch=>{
+    dispatch({
+      type:constants.DELETE_SEARCH_HISTORY,
+      value:deleteSearch(query)
+    })
+  }
+}
+
+export const clearSearchHistory=()=>{
+  return dispatch=>{
+    dispatch({
+      type:constants.CLEAR_SEARCH_HISTORY,
+      value:clearSearchHistory
     })
   }
 }

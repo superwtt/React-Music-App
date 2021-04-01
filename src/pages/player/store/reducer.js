@@ -1,6 +1,6 @@
 import { playMode } from "@/common/js/config";
 import * as constants from "./actionTypes";
-import {loadSearch} from "@/common/js/cache";
+import { loadSearch } from "@/common/js/cache";
 
 const defaultState = {
   singer: {},
@@ -33,8 +33,11 @@ export default (state = defaultState, action) => {
     case constants.SET_CURRENT_SONG:
       return { ...state, currentSong: state.playList[action.value] };
     case constants.SET_SEARCH_HISTORY:
-      console.log(action.value)
       return { ...state, searchHistory: action.value };
+    case constants.DELETE_SEARCH_HISTORY:
+      return { ...state, searchHistory: action.value };
+      case constants.CLEAR_SEARCH_HISTORY:
+        return { ...state, searchHistory: [] };
     default:
       return state;
   }

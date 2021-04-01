@@ -20,13 +20,13 @@ const SearchBox = (props) => {
     getQuery("");
   };
 
-  const blur = ()=>{
-    blurInput.current.blur()
-  }
+  const blur = () => {
+    blurInput.current.blur();
+  };
 
   useEffect(() => {
     setQueryFromState(query);
-  }, []);
+  }, [query]);
 
   return (
     <div className="search-box">
