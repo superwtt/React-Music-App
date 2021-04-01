@@ -23,7 +23,7 @@ function insertArray(arr, val, compare, maxLen) {
 export function saveSearch(query) {
     let searches = storage.get(SEARCH_KEY, [])
     insertArray(searches, query, (item) => {
-      return item.id === query.id
+      return item === query
     }, SEARCH_MAX_LEN)
     storage.set(SEARCH_KEY, searches)
     return searches

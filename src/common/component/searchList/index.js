@@ -6,15 +6,28 @@ import "./index.less";
 const SearchList = (props) => {
   const { searches } = props;
 
+  const selectItem = (item) => {};
+
+  const deleteItem = (e, item) => {};
+
   return (
     <div className="search-list">
       <ul>
         {searches.length > 0 &&
           searches.map((item, index) => {
             return (
-              <li className="search-item" key={index}>
+              <li
+                onClick={() => selectItem(item)}
+                className="search-item"
+                key={index}
+              >
                 <span className="text">{item}</span>
-                <span className="icon">
+                <span
+                  className="icon"
+                  onClick={(e) => {
+                    deleteItem(e, item);
+                  }}
+                >
                   <i className="icon-delete"></i>
                 </span>
               </li>
