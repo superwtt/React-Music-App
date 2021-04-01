@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 
-import * as actionCreators from "@/pages/player/store/actionCreators"
+import SearchList from "@/common/component/searchList";
+import * as actionCreators from "@/pages/player/store/actionCreators";
 import { debounce } from "@/common/js/util";
 import Suggest from "@/pages/suggest";
 import { ERR_OK } from "@/services/config";
@@ -12,6 +13,8 @@ import "./index.less";
 const Search = (props) => {
   const [hotKey, setHotKey] = useState([]);
   const [query, setQuery] = useState("");
+
+  const { searchHistory } = props;
 
   const box = useRef(null);
 
@@ -29,7 +32,7 @@ const Search = (props) => {
   };
 
   const saveSearchHistory = (item) => {
-    props.saveSearch(item)
+    props.saveSearch(item.name);
   };
 
   useEffect(() => {
@@ -69,13 +72,17 @@ const Search = (props) => {
                 })}
               </ul>
             </div>
-            <div className="search-history">
-              <h1 className="title">
-                <span className="clear">
-                  <i className="icon-clear"></i>
-                </span>
-              </h1>
-            </div>
+            {searchHistory && (
+              <div className="search-history">
+                <h1 className="title">
+                  <span className="text">搜索历史</span>
+                  <span className="clear">
+                    <i className="icon-clear"></i>
+                  </span>
+                </h1>
+                <SearchList searches={searchHistory} />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -92,12 +99,16 @@ const Search = (props) => {
   );
 };
 
+const mapStateToProps = (state) => ({
+  searchHistory: state.playerReducer.searchHistory,
+});
+
 const mapDispatchToProps = (dispatch) => {
   return {
     saveSearch(item) {
-      dispatch(actionCreators.saveSearchHistory(item))
+      dispatch(actionCreators.saveSearchHistory(item));
     },
   };
 };
 
-export default connect(null, mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
