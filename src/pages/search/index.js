@@ -69,6 +69,13 @@ const Search = (props) => {
                 })}
               </ul>
             </div>
+            <div className="search-history">
+              <h1 className="title">
+                <span className="clear">
+                  <i className="icon-clear"></i>
+                </span>
+              </h1>
+            </div>
           </div>
         </div>
       )}
