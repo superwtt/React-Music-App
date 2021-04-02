@@ -9,10 +9,12 @@ import { ERR_OK } from "@/services/config";
 import { getHotKey } from "@/services/search";
 import SearchBox from "@/common/component/searchBox";
 import "./index.less";
+import Confirm from "@/common/component/confirm";
 
 const Search = (props) => {
   const [hotKey, setHotKey] = useState([]);
   const [query, setQuery] = useState("");
+  const [showConfirm,setShowConfirm] = useState(false);
 
   const { searchHistory } = props;
 
@@ -41,11 +43,19 @@ const Search = (props) => {
   }
 
   const clear = ()=>{
-    props.clearSearchHistory();
+    setShowConfirm(true);
   }
 
   const deleteListItem = (item)=>{
     props.deleteSearchHistory(item)
+  }
+
+  const confirm = ()=>{
+    props.clearSearchHistory();
+  }
+
+  const cancel = ()=>{
+    setShowConfirm(false);
   }
 
   useEffect(() => {
@@ -105,9 +115,15 @@ const Search = (props) => {
             beforeScrollStart={beforeScrollStart}
             query={query}
             saveSearchHistory={saveSearchHistory}
+            confirm={confirm}
+            cancel={cancel}
           />
         </div>
       )}
+      {
+        showConfirm&&<Confirm showConfirm={showConfirm} confirm={confirm} cancel={cancel} />
+      }
+      
     </div>
   );
 };

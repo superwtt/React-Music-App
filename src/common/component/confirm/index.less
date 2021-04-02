@@ -8,11 +8,16 @@
   bottom: 0;
   z-index: 998;
   background-color: @color-background-d;
-  &.confirm-fade-enter-active {
+  opacity: 0;
+  &.fade-enter-active {
+    opacity: 1;
     animation: confirm-fadein 0.3s;
     .confirm-content {
       animation: confirm-zoom 0.3s;
     }
+  }
+  &.fade-enter-done{
+      opacity: 1;
   }
   .confirm-wrapper {
     position: absolute;

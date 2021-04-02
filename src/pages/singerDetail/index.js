@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 import MusicList from "../musicList";
 import { getSingerDetail } from "@/services/singer";
