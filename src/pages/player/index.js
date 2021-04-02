@@ -289,6 +289,8 @@ const Player = (props) => {
 
     let lyricLines = document.getElementsByClassName("lyricLine");
 
+    if (!lyricList.current) return;
+
     if (lineNum > 5) {
       let lineEl = lyricLines[lineNum - 5];
       lyricList.current.scrollToElement(lineEl, 1000);
@@ -411,11 +413,11 @@ const Player = (props) => {
     setShowPlayListFlag(true);
   };
 
-  const close = ()=>{
-    setTimeout(()=>{
+  const close = () => {
+    setTimeout(() => {
       setShowPlayListFlag(false);
-    },300)
-  }
+    }, 300);
+  };
 
   /**
    * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
@@ -440,6 +442,7 @@ const Player = (props) => {
     if (currentLyric) {
       currentLyric.stop();
     }
+    if (!currentSong) return;
     setTimeout(() => {
       audio.current && audio.current.play().catch((error) => {});
       currentSong.id && getLyric();
@@ -447,186 +450,200 @@ const Player = (props) => {
   }, [currentSong]);
 
   useEffect(() => {
+    if(!audio.current) return
     playing ? audio.current.play().catch((error) => {}) : audio.current.pause();
   }, [playing]);
 
   return (
     <>
-      <div
-        className="player"
-        style={{ display: playList.length > 0 ? "" : "none" }}
-      >
-        <CSSTransition
-          in={playNumber ? true : false}
-          timeout={300}
-          classNames="normal"
-          onEnter={enter}
-          onEntered={afterEnter}
-          onExit={exit}
-          onExited={afterExit}
-        >
-          <div className="normalPlayer">
-            <div className="background">
-              <img width="100%" height="100%" src={currentSong.image} alt="" />
-            </div>
-            <div className="top">
-              <div className="back" onClick={back}>
-                <i className="icon-back iconBack"></i>
-              </div>
-              <h1
-                className="title"
-                dangerouslySetInnerHTML={{ __html: currentSong.name }}
-              ></h1>
-              <h2
-                className="subtitle"
-                dangerouslySetInnerHTML={{ __html: currentSong.singer }}
-              ></h2>
-            </div>
-            <div
-              className="middle"
-              onTouchStart={middleTouchStart}
-              onTouchMove={middleTouchMove}
-              onTouchEnd={middleTouchEnd}
-            >
-              <div className="middleL">
-                <div className="cdWrapper">
-                  <div className="cd imageWrapper">
-                    <img
-                      className={`image ${_cdPlayer()}`}
-                      src={currentSong.image}
-                      alt=""
-                    />
-                  </div>
-                </div>
-                <div className="playingLyricWrapper">
-                  <div className="playingLyric">{playingLyric}</div>
-                </div>
-              </div>
-              {currentLyric && (
-                <Scroll
-                  classVal={"middle-r"}
-                  customMade={"lyric"}
-                  data={currentLyric ? currentLyric.lines : []}
-                  ref={lyricList}
-                >
-                  <div className="lyric-wrapper">
-                    {currentLyric && currentLyric.lines && (
-                      <div>
-                        {currentLyric.lines.map((item, index) => {
-                          return (
-                            <p
-                              key={index}
-                              className={`lyricLine text ${
-                                currentLineNum === index ? "current" : ""
-                              }`}
-                            >
-                              {item.txt}
-                            </p>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </Scroll>
-              )}
-            </div>
-            <div className="bottom">
-              <div className="dot-wrapper">
-                <div
-                  className={`dot ${currentShow === "cd" ? "active" : ""}`}
-                ></div>
-                <div
-                  className={`dot ${currentShow === "lyric" ? "active" : ""}`}
-                ></div>
-              </div>
-              <div className="progress-wrapper">
-                <span className="time time-l">{currentTime}</span>
-                <div className="progress-bar-wrapper">
-                  <ProgressBar
-                    percent={percent}
-                    percentChange={onPercentChange}
-                  />
-                </div>
-                <div className="time time-r">
-                  {formatTime(currentSong.duration)}
-                </div>
-              </div>
-              <div className="operators">
-                <div className="icon iLeft" onClick={changeMode}>
-                  <i className={_playMode()}></i>
-                </div>
-                <div className={`icon iLeft ${_disable()}`}>
-                  <i className="icon-prev" onClick={prev}></i>
-                </div>
-                <div className={`icon iCenter ${_disable()}`}>
-                  <i
-                    className={_calculatePlayIcon()}
-                    onClick={() => togglePlaying()}
-                  ></i>
-                </div>
-                <div className={`icon iRight ${_disable()}`}>
-                  <i className="icon-next" onClick={next}></i>
-                </div>
-                <div className="icon iRight">
-                  <i className="icon icon-not-favorite"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CSSTransition>
-        <div style={{ display: fullScreen ? "none" : "" }}>
-          <CSSTransition
-            in={playNumber ? false : true}
-            timeout={300}
-            classNames="mini"
+      {currentSong&&currentSong.id && (
+        <>
+          <div
+            className="player"
+            style={{ display: playList.length > 0 ? "" : "none" }}
           >
-            <div className="miniPlayer" onClick={open}>
-              <div className="icon">
-                <div className="imgWrapper miniWrapper">
+            <CSSTransition
+              in={playNumber ? true : false}
+              timeout={300}
+              classNames="normal"
+              onEnter={enter}
+              onEntered={afterEnter}
+              onExit={exit}
+              onExited={afterExit}
+            >
+              <div className="normalPlayer">
+                <div className="background">
                   <img
-                    width="40"
-                    height="40"
-                    className={`miniImage ${_cdPlayer()}`}
+                    width="100%"
+                    height="100%"
                     src={currentSong.image}
                     alt=""
                   />
                 </div>
+                <div className="top">
+                  <div className="back" onClick={back}>
+                    <i className="icon-back iconBack"></i>
+                  </div>
+                  <h1
+                    className="title"
+                    dangerouslySetInnerHTML={{ __html: currentSong.name }}
+                  ></h1>
+                  <h2
+                    className="subtitle"
+                    dangerouslySetInnerHTML={{ __html: currentSong.singer }}
+                  ></h2>
+                </div>
+                <div
+                  className="middle"
+                  onTouchStart={middleTouchStart}
+                  onTouchMove={middleTouchMove}
+                  onTouchEnd={middleTouchEnd}
+                >
+                  <div className="middleL">
+                    <div className="cdWrapper">
+                      <div className="cd imageWrapper">
+                        <img
+                          className={`image ${_cdPlayer()}`}
+                          src={currentSong.image}
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                    <div className="playingLyricWrapper">
+                      <div className="playingLyric">{playingLyric}</div>
+                    </div>
+                  </div>
+                  {currentLyric && (
+                    <Scroll
+                      classVal={"middle-r"}
+                      customMade={"lyric"}
+                      data={currentLyric ? currentLyric.lines : []}
+                      ref={lyricList}
+                    >
+                      <div className="lyric-wrapper">
+                        {currentLyric && currentLyric.lines && (
+                          <div>
+                            {currentLyric.lines.map((item, index) => {
+                              return (
+                                <p
+                                  key={index}
+                                  className={`lyricLine text ${
+                                    currentLineNum === index ? "current" : ""
+                                  }`}
+                                >
+                                  {item.txt}
+                                </p>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </Scroll>
+                  )}
+                </div>
+                <div className="bottom">
+                  <div className="dot-wrapper">
+                    <div
+                      className={`dot ${currentShow === "cd" ? "active" : ""}`}
+                    ></div>
+                    <div
+                      className={`dot ${
+                        currentShow === "lyric" ? "active" : ""
+                      }`}
+                    ></div>
+                  </div>
+                  <div className="progress-wrapper">
+                    <span className="time time-l">{currentTime}</span>
+                    <div className="progress-bar-wrapper">
+                      <ProgressBar
+                        percent={percent}
+                        percentChange={onPercentChange}
+                      />
+                    </div>
+                    <div className="time time-r">
+                      {formatTime(currentSong.duration)}
+                    </div>
+                  </div>
+                  <div className="operators">
+                    <div className="icon iLeft" onClick={changeMode}>
+                      <i className={_playMode()}></i>
+                    </div>
+                    <div className={`icon iLeft ${_disable()}`}>
+                      <i className="icon-prev" onClick={prev}></i>
+                    </div>
+                    <div className={`icon iCenter ${_disable()}`}>
+                      <i
+                        className={_calculatePlayIcon()}
+                        onClick={() => togglePlaying()}
+                      ></i>
+                    </div>
+                    <div className={`icon iRight ${_disable()}`}>
+                      <i className="icon-next" onClick={next}></i>
+                    </div>
+                    <div className="icon iRight">
+                      <i className="icon icon-not-favorite"></i>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="text">
-                <h2
-                  className="name"
-                  dangerouslySetInnerHTML={{ __html: currentSong.name }}
-                ></h2>
-                <p
-                  className="desc"
-                  dangerouslySetInnerHTML={{ __html: currentSong.singer }}
-                ></p>
-              </div>
-              <div className="control">
-                <ProgressCircle percent={percent}>
-                  <i
-                    onClick={miniTogglePlaying}
-                    className={`icon-mini ${_miniIcon()}`}
-                  ></i>
-                </ProgressCircle>
-              </div>
-              <div className="control" onClick={showPlayList}>
-                <i className="iconPlaylist icon-playlist"></i>
-              </div>
+            </CSSTransition>
+            <div style={{ display: fullScreen ? "none" : "" }}>
+              <CSSTransition
+                in={playNumber ? false : true}
+                timeout={300}
+                classNames="mini"
+              >
+                <div className="miniPlayer" onClick={open}>
+                  <div className="icon">
+                    <div className="imgWrapper miniWrapper">
+                      <img
+                        width="40"
+                        height="40"
+                        className={`miniImage ${_cdPlayer()}`}
+                        src={currentSong.image}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                  <div className="text">
+                    <h2
+                      className="name"
+                      dangerouslySetInnerHTML={{ __html: currentSong.name }}
+                    ></h2>
+                    <p
+                      className="desc"
+                      dangerouslySetInnerHTML={{ __html: currentSong.singer }}
+                    ></p>
+                  </div>
+                  <div className="control">
+                    <ProgressCircle percent={percent}>
+                      <i
+                        onClick={miniTogglePlaying}
+                        className={`icon-mini ${_miniIcon()}`}
+                      ></i>
+                    </ProgressCircle>
+                  </div>
+                  <div className="control" onClick={showPlayList}>
+                    <i className="iconPlaylist icon-playlist"></i>
+                  </div>
+                </div>
+              </CSSTransition>
+              {showPlayListFlag && (
+                <PlayList close={close} showPlayListFlag={showPlayListFlag} />
+              )}
             </div>
-          </CSSTransition>
-          {showPlayListFlag && <PlayList close={close} showPlayListFlag={showPlayListFlag} />}
-        </div>
-      </div>
-      
-      <audio
-        ref={audio}
-        src={currentSong.url}
-        onCanPlay={canPlay}
-        onError={error}
-        onTimeUpdate={timeUpdate}
-        onEnded={end}
-      ></audio>
+          </div>
+
+          <audio
+            ref={audio}
+            src={currentSong.url}
+            onCanPlay={canPlay}
+            onError={error}
+            onTimeUpdate={timeUpdate}
+            onEnded={end}
+          ></audio>
+        </>
+      )}
     </>
   );
 };

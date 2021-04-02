@@ -1,7 +1,7 @@
 import * as constants from "./actionTypes";
 import { playMode } from "@/common/js/config";
 import { shuffle } from "@/common/js/util";
-import {saveSearch,deleteSearch,clearSearch} from "@/common/js/cache";
+import { saveSearch, deleteSearch, clearSearch } from "@/common/js/cache";
 
 let mode = 0;
 
@@ -143,9 +143,8 @@ export const randomPlay = (list) => {
   };
 };
 
-export const insertSong = (song,playList,sequenceList,currentIndex) => {
+export const insertSong = (song, playList, sequenceList, currentIndex) => {
   return (dispatch) => {
-
     // 记录当前歌曲
     let currentSong = playList[currentIndex];
 
@@ -211,41 +210,106 @@ export const insertSong = (song,playList,sequenceList,currentIndex) => {
 
     dispatch({
       type: constants.SET_FULL_SCREEN,
-      value: true
+      value: true,
     });
 
     dispatch({
       type: constants.SET_CURRENT_SONG,
-      value: currentIndex
+      value: currentIndex,
+    });
+  };
+};
+
+export const saveSearchHistory = (query) => {
+  return (dispatch) => {
+    dispatch({
+      type: constants.SET_SEARCH_HISTORY,
+      value: saveSearch(query),
+    });
+  };
+};
+
+export const deleteSearchHistory = (query) => {
+  return (dispatch) => {
+    dispatch({
+      type: constants.DELETE_SEARCH_HISTORY,
+      value: deleteSearch(query),
+    });
+  };
+};
+
+export const clearSearchHistory = () => {
+  return (dispatch) => {
+    dispatch({
+      type: constants.CLEAR_SEARCH_HISTORY,
+      value: clearSearchHistory,
+    });
+  };
+};
+
+export const deleteSong = (song, playlist, sequenceList, currentIndex) => {
+  return (dispatch) => {
+    let pIndex = findCurrentIndex(playlist, song);
+    playlist.splice(pIndex, 1);
+    let sIndex = findCurrentIndex(sequenceList, song);
+    sequenceList.splice(sIndex, 1);
+    if (currentIndex > pIndex || currentIndex === playlist.length) {
+      currentIndex--;
+    }
+
+    dispatch({
+      type: constants.SET_PLAYLIST,
+      value: playlist,
+    });
+    dispatch({
+      type: constants.SET_SEQUENCE_LIST,
+      value: sequenceList,
+    });
+    dispatch({
+      type: constants.SET_CURRENT_INDEX,
+      value: currentIndex,
+    });
+    dispatch({
+      type: constants.SET_CURRENT_SONG,
+      value: currentIndex,
     });
 
+    if (!playlist.length) {
+      dispatch({
+        type: constants.SET_PLAYING_STATE,
+        value: false,
+      });
+    } else{
+      dispatch({
+        type: constants.SET_PLAYING_STATE,
+        value: true,
+      });
+    }
   };
 };
 
 
-export const saveSearchHistory = (query)=>{
+export const deleteSongList = ()=>{
   return dispatch=>{
     dispatch({
-      type:constants.SET_SEARCH_HISTORY,
-      value:saveSearch(query)
-    })
-  }
-}
-
-export const deleteSearchHistory = (query)=>{
-  return dispatch=>{
+      type: constants.SET_PLAYLIST,
+      value: [],
+    });
     dispatch({
-      type:constants.DELETE_SEARCH_HISTORY,
-      value:deleteSearch(query)
-    })
-  }
-}
-
-export const clearSearchHistory=()=>{
-  return dispatch=>{
+      type: constants.SET_SEQUENCE_LIST,
+      value: [],
+    });
     dispatch({
-      type:constants.CLEAR_SEARCH_HISTORY,
-      value:clearSearchHistory
-    })
+      type: constants.SET_CURRENT_INDEX,
+      value: -1,
+    });
+    dispatch({
+      type: constants.SET_CURRENT_SONG,
+      value: -1,
+    });
+    dispatch({
+      type: constants.SET_PLAYING_STATE,
+      value: false,
+    });
   }
 }
