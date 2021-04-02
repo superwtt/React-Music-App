@@ -4,6 +4,7 @@ import { CSSTransition } from "react-transition-group";
 import animations from "create-keyframe-animation";
 import Lyric from "lyric-parser";
 
+import PlayList from "@/pages/playList";
 import Scroll from "@/common/component/scroll";
 import { shuffle } from "@/common/js/util";
 import { playMode } from "@/common/js/config";
@@ -29,6 +30,7 @@ const Player = (props) => {
   const [currentLineNum, setCurrentLineNum] = useState(0);
   const [currentShow, setCurrentShow] = useState("cd");
   const [playingLyric, setPlayingLyric] = useState("");
+  const [showPlayListFlag, setShowPlayListFlag] = useState(false);
 
   const lyricList = useRef(null);
 
@@ -404,6 +406,17 @@ const Player = (props) => {
     ] = `300ms`;
   };
 
+  const showPlayList = (e) => {
+    e.stopPropagation();
+    setShowPlayListFlag(true);
+  };
+
+  const close = ()=>{
+    setTimeout(()=>{
+      setShowPlayListFlag(false);
+    },300)
+  }
+
   /**
    * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
    * @param wrapper
@@ -445,7 +458,7 @@ const Player = (props) => {
       >
         <CSSTransition
           in={playNumber ? true : false}
-          timeout={400}
+          timeout={300}
           classNames="normal"
           onEnter={enter}
           onEntered={afterEnter}
@@ -492,7 +505,7 @@ const Player = (props) => {
               {currentLyric && (
                 <Scroll
                   classVal={"middle-r"}
-                  customMade={'lyric'}
+                  customMade={"lyric"}
                   data={currentLyric ? currentLyric.lines : []}
                   ref={lyricList}
                 >
@@ -597,13 +610,15 @@ const Player = (props) => {
                   ></i>
                 </ProgressCircle>
               </div>
-              <div className="control">
+              <div className="control" onClick={showPlayList}>
                 <i className="iconPlaylist icon-playlist"></i>
               </div>
             </div>
           </CSSTransition>
+          {showPlayListFlag && <PlayList close={close} showPlayListFlag={showPlayListFlag} />}
         </div>
       </div>
+      
       <audio
         ref={audio}
         src={currentSong.url}
