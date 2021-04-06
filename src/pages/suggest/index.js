@@ -160,7 +160,7 @@ const Suggest = (props) => {
         <ul className="suggest-list">
           {result.map((item, index) => {
             return (
-              <li className="suggest-item" onClick={() => selectItem(item)}>
+              <li className="suggest-item" key={index} onClick={() => selectItem(item)}>
                 <div className="icon">
                   <i className={`${getIconCls(item)}`}></i>
                 </div>

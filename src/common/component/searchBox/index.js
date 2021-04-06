@@ -38,7 +38,7 @@ const SearchBox = (props) => {
         value={queryFromState}
         placeholder={placeholder}
         onChange={handleQueryChange}
-        blur={blur}
+        onBlur={blur}
       />
       {query && <i onClick={clearQuery} className="icon-dismiss"></i>}
     </div>

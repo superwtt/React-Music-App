@@ -1,7 +1,7 @@
 import * as constants from "./actionTypes";
 import { playMode } from "@/common/js/config";
 import { shuffle } from "@/common/js/util";
-import { saveSearch, deleteSearch, clearSearch } from "@/common/js/cache";
+import { saveSearch, deleteSearch, clearSearch,savePlay } from "@/common/js/cache";
 
 let mode = 0;
 
@@ -311,5 +311,15 @@ export const deleteSongList = ()=>{
       type: constants.SET_PLAYING_STATE,
       value: false,
     });
+  }
+}
+
+export const savePlayHistory = (song)=>{
+  console.log(savePlay(song))
+  return dispatch=>{
+    dispatch({
+      type:constants.SAVE_PLAY_HISTORY,
+      value:savePlay(song)
+    })
   }
 }

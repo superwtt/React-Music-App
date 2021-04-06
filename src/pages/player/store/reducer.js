@@ -12,6 +12,7 @@ const defaultState = {
   currentIndex: -1, // 当前播放歌曲的索引
   currentSong: {}, // 当前播放歌曲
   searchHistory: loadSearch(), // 搜索历史
+  playHistory: [],
 };
 
 export default (state = defaultState, action) => {
@@ -36,8 +37,10 @@ export default (state = defaultState, action) => {
       return { ...state, searchHistory: action.value };
     case constants.DELETE_SEARCH_HISTORY:
       return { ...state, searchHistory: action.value };
-      case constants.CLEAR_SEARCH_HISTORY:
-        return { ...state, searchHistory: [] };
+    case constants.CLEAR_SEARCH_HISTORY:
+      return { ...state, searchHistory: [] };
+    case constants.SAVE_PLAY_HISTORY:
+      return { ...state, playHistory: action.value };
     default:
       return state;
   }

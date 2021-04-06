@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 
+import AddSong from "@/pages/addSong";
 import Confirm from "@/common/component/confirm";
 import Scroll from "@/common/component/scroll";
 import { playMode } from "@/common/js/config";
@@ -11,6 +12,7 @@ import "./index.less";
 const PlayList = (props) => {
   const [playNumber, setPlayNumber] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showAddSong, setShowAddSong] = useState(false);
 
   const listContent = useRef(null);
 
@@ -59,9 +61,9 @@ const PlayList = (props) => {
     props.deleteSong(item, playList, sequenceList, currentIndex);
   };
 
-  const clear = (e)=>{
-     e.stopPropagation(); 
-     setShowConfirm(true);
+  const clear = (e) => {
+    e.stopPropagation();
+    setShowConfirm(true);
   };
 
   const confirm = () => {
@@ -72,6 +74,19 @@ const PlayList = (props) => {
     setShowConfirm(false);
   };
 
+  const addSong = (e) => {
+    e.stopPropagation();
+    setShowAddSong(true);
+  };
+
+  const hide = () => {
+    setShowAddSong(false);
+  };
+
+  const addSongToList = (item)=>{
+    console.log(item)
+  }
+
   useEffect(() => {
     showPlayListFlag ? setPlayNumber(1) : setPlayNumber(0);
   }, [showPlayListFlag]);
@@ -81,6 +96,7 @@ const PlayList = (props) => {
   //   },[currentSong])
 
   return (
+    <>
     <CSSTransition
       in={playNumber ? true : false}
       timeout={10000}
@@ -112,10 +128,13 @@ const PlayList = (props) => {
                   >
                     <i className={`current ${getCurrentIcon(item)}`}></i>
                     <span className="text">{item.name}</span>
-                    <span className="like">
+                    <span className="like" onClick={()=>addSongToList(item)}>
                       <i className="icon-not-favorite"></i>
                     </span>
-                    <span className="delete" onClick={(e) => deleteOne(e,item)}>
+                    <span
+                      className="delete"
+                      onClick={(e) => deleteOne(e, item)}
+                    >
                       <i className="icon-delete"></i>
                     </span>
                   </li>
@@ -124,7 +143,7 @@ const PlayList = (props) => {
             </ul>
           </Scroll>
           <div className="list-operate">
-            <div className="add">
+            <div className="add" onClick={addSong}>
               <i className="icon-add"></i>
               <span className="text">添加歌曲到队列</span>
             </div>
@@ -134,11 +153,16 @@ const PlayList = (props) => {
           </div>
         </div>
         {showConfirm && (
-        <Confirm showConfirm={showConfirm} confirm={confirm} cancel={cancel} />
-      )}
-        
+          <Confirm
+            showConfirm={showConfirm}
+            confirm={confirm}
+            cancel={cancel}
+          />
+        )}
       </div>
     </CSSTransition>
+    {showAddSong && <AddSong hide={hide} showAddSong={showAddSong} />}
+    </>
   );
 };
 
@@ -163,9 +187,9 @@ const mapDispatchToProps = (dispatch) => {
         actionCreators.deleteSong(item, playList, sequenceList, currentIndex)
       );
     },
-    deleteSongList(){
+    deleteSongList() {
       dispatch(actionCreators.deleteSongList());
-    }
+    },
   };
 };
 

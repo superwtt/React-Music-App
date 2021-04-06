@@ -164,6 +164,7 @@ const Player = (props) => {
 
   const canPlay = () => {
     songReady = true;
+    props.savePlayHistory(currentSong);
   };
 
   const error = () => {
@@ -326,6 +327,7 @@ const Player = (props) => {
     touchFinger.startX = touch.pageX;
     touchFinger.startY = touch.pageY;
   };
+
   const middleTouchMove = (e) => {
     e.stopPropagation();
     if (!touchFinger.initiated) return;
@@ -365,6 +367,7 @@ const Player = (props) => {
       transitionDuration
     ] = `0`;
   };
+
   const middleTouchEnd = (e) => {
     e.stopPropagation();
 
@@ -675,6 +678,9 @@ const mapDispatchToProps = (dispatch) => {
     setPlayList(list) {
       dispatch(actionCreators.setPlayList(list));
     },
+    savePlayHistory(song){
+      dispatch(actionCreators.savePlayHistory(song))
+    }
   };
 };
 
