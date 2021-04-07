@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 
+import Song from "@/common/js/song";
 import SongList from "@/common/component/songList";
 import Scroll from "@/common/component/scroll";
 import Switches from "@/common/component/switches";
@@ -25,7 +26,7 @@ const AddSong = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [query, setQuery] = useState("");
 
-  const { showAddSong, playHistory } = props;
+  const { showAddSong, playHistory, playList, sequenceList, currentIndex:currentSongIndex } = props;
 
   const box = useRef(null);
 
@@ -52,6 +53,14 @@ const AddSong = (props) => {
   const selectIndex = (index) => {
     setCurrentIndex(index);
   };
+
+  const selectItem = (song,index)=>{
+    console.log(song)
+    console.log(index)
+    if(index!=0){
+      props.insertSong(new Song(song), playList, sequenceList, currentSongIndex)
+    } 
+  }
 
   useEffect(() => {
     showAddSong ? setNumber(1) : setNumber(0);
@@ -83,7 +92,7 @@ const AddSong = (props) => {
             {currentIndex === 0 && 
             <Scroll classVal={"list-scroll"} data={playHistory}>
               <div className="list-inner">
-                <SongList songs={playHistory} />
+                <SongList selectItem={selectItem} songs={playHistory} />
               </div>    
             </Scroll>}
           </div>
@@ -104,12 +113,20 @@ const AddSong = (props) => {
 
 const mapStateToProps = (state) => ({
   playHistory: state.playerReducer.playHistory,
+  playList: state.playerReducer.playList,
+  sequenceList: state.playerReducer.sequenceList,
+  currentIndex: state.playerReducer.currentIndex,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     saveSearch(item) {
       dispatch(actionCreators.saveSearchHistory(item));
+    },
+    insertSong(song, playList, sequenceList, currentSongIndex) {
+      dispatch(
+        actionCreators.insertSong(song, playList, sequenceList, currentSongIndex)
+      );
     },
   };
 };
