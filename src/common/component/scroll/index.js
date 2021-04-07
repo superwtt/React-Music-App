@@ -93,7 +93,7 @@ const Scroll = forwardRef((props, ref) => {
   useEffect(() => {
     setTimeout(() => {
       _initScroll();
-    }, 20);
+    }, props.refreshDelay);
   }, []);
 
   // disclist列表请求到数据的时候，bscroll的高度已经计算到了，所以高度不对，需要重新渲染一下
@@ -124,7 +124,8 @@ Scroll.propTypes = {
   data: PropTypes.array,
   listenScroll: PropTypes.bool,
   pullup: PropTypes.bool,
-  beforeScroll: PropTypes.bool
+  beforeScroll: PropTypes.bool,
+  refreshDelay: PropTypes.number,
 };
 
 Scroll.defaultProps = {
@@ -133,7 +134,8 @@ Scroll.defaultProps = {
   data: null,
   listenScroll: false,
   pullup: false,
-  beforeScroll: false
+  beforeScroll: false,
+  refreshDelay: 20
 };
 
 export default Scroll;

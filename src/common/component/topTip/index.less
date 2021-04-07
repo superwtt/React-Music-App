@@ -1,0 +1,17 @@
+@import "../../style/variable.less";
+
+.top-tip {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 500;
+  background: @color-dialog-background;
+  &.drop-enter-active,
+  &.drop-exit-active {
+    transition: all 0.3s;
+  }
+  &.drop-enter,
+  &.drop-exit {
+    transform: translate3d(0, -100%, 0);
+  }
+}
