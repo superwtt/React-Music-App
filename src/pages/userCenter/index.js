@@ -43,7 +43,7 @@ const UserCenter = (props) => {
 
   const randomPlay = () => {
     let list = currentIndex === 0 ? favoriteList : playHistory;
-    if(!list.length) return
+    if (!list.length) return;
     list = list.map((song) => {
       return new Song(song);
     });

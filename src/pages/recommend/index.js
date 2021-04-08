@@ -34,7 +34,9 @@ const Recommend = (props) => {
 
     Promise.all([p1, p2])
       .then(function (posts) {
-        recommendContent.current.refresh()
+        setTimeout(()=>{
+          recommendContent.current.refresh()
+        },20)
       })
       .catch(function (reason) {
         console.log(reason);

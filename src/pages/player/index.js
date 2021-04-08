@@ -24,7 +24,7 @@ let songReady = false;
 
 const Player = (props) => {
   const [playNumber, setPlayNumber] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState("0:00");
   const [percent, setPercent] = useState(0);
   const [currentLyric, setCurrentLyric] = useState(null);
   const [currentLineNum, setCurrentLineNum] = useState(0);

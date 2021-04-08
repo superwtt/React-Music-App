@@ -24,26 +24,25 @@ const Scroll = forwardRef((props, ref) => {
     }
   };
 
-  const pullup = ()=>{
-    if(props.pullup){
-      scroll.on("scrollEnd",()=>{
-        if(scroll.y<=scroll.maxScrollY+50){
+  const pullup = () => {
+    if (props.pullup) {
+      scroll.on("scrollEnd", () => {
+        if (scroll.y <= scroll.maxScrollY + 50) {
           props.scrollToEnd();
         }
-      })
+      });
     }
-  }
+  };
 
-  const beforeScroll = ()=>{
-    if(props.beforeScroll){
-      scroll.on("beforeScrollStart",()=>{
+  const beforeScroll = () => {
+    if (props.beforeScroll) {
+      scroll.on("beforeScrollStart", () => {
         // console.log("beforeScrollStart")
-      })
+      });
     }
-  }
+  };
 
   const _initScroll = () => {
-    
     if (!wrapperRef.current) return;
 
     const sc = new BScroll(wrapperRef.current, {
@@ -66,9 +65,8 @@ const Scroll = forwardRef((props, ref) => {
     scroll && scroll.disable();
   };
   const refresh = () => {
-    // console.log(scroll)
     scroll && scroll.refresh();
-    bindScroll();
+    // bindScroll();
   };
   const scrollTo = function () {
     scroll && scroll.scrollTo.apply(scroll, arguments);
@@ -108,7 +106,6 @@ const Scroll = forwardRef((props, ref) => {
   //   console.log("deep-keys", props.data);
   // }, [props.data]);
 
-
   return (
     <div className={props.classVal} ref={wrapperRef}>
       {props.children}
@@ -135,7 +132,7 @@ Scroll.defaultProps = {
   listenScroll: false,
   pullup: false,
   beforeScroll: false,
-  refreshDelay: 20
+  refreshDelay: 20,
 };
 
 export default Scroll;

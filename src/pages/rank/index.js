@@ -38,7 +38,7 @@ const Rank = (props) => {
   }, []);
 
   return (
-    <div className="rank">
+    <div className="ranks">
       <Scroll classVal={"toplist"} data={topListArray}>
         <ul>
           {topListArray.map((item, index) => {

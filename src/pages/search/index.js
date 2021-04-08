@@ -88,7 +88,7 @@ const Search = (props) => {
   return (
     <div className="search">
       <div className="search-box-wrapper">
-        <SearchBox ref={box} query={query} getQuery={getQuery} />
+        <SearchBox query={query} getQuery={getQuery} />
       </div>
       {!query && (
         <div className="shortcut-wrapper">
