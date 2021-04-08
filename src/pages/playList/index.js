@@ -23,6 +23,7 @@ const PlayList = (props) => {
     mode,
     playList,
     currentIndex,
+    favoriteList
   } = props;
 
   const closeList = () => {
@@ -83,9 +84,29 @@ const PlayList = (props) => {
     setShowAddSong(false);
   };
 
-  const addSongToList = (item)=>{
-    console.log(item)
-  }
+  const isFavorite = (song) => {
+    const index = favoriteList.findIndex((item) => {
+      return item.id === song.id;
+    });
+    return index > -1;
+  };
+
+
+  const toggleFavorite = (e,item)=>{
+    e.stopPropagation()
+    if (isFavorite(item)) {
+      props.deleteFavoriteList(item);
+    } else {
+      props.saveFavoriteList(item);
+    }
+  };
+
+  const getFavoriteIcon = (song) => {
+    if (isFavorite(song)) {
+      return "icon-favorite";
+    }
+    return "icon-not-favorite";
+  };
 
   useEffect(() => {
     showPlayListFlag ? setPlayNumber(1) : setPlayNumber(0);
@@ -128,8 +149,8 @@ const PlayList = (props) => {
                   >
                     <i className={`current ${getCurrentIcon(item)}`}></i>
                     <span className="text">{item.name}</span>
-                    <span className="like" onClick={()=>addSongToList(item)}>
-                      <i className="icon-not-favorite"></i>
+                    <span className="like" onClick={(e)=>toggleFavorite(e,item)}>
+                      <i className={`${getFavoriteIcon(item)}`}></i>
                     </span>
                     <span
                       className="delete"
@@ -172,6 +193,7 @@ const mapStateToProps = (state) => ({
   currentSong: state.playerReducer.currentSong,
   playList: state.playerReducer.playList,
   currentIndex: state.playerReducer.currentIndex,
+  favoriteList: state.playerReducer.favoriteList,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -189,6 +211,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     deleteSongList() {
       dispatch(actionCreators.deleteSongList());
+    },
+    saveFavoriteList(song) {
+      dispatch(actionCreators.saveFavoriteList(song));
+    },
+    deleteFavoriteList(song) {
+      dispatch(actionCreators.deleteFavoriteList(song));
     },
   };
 };

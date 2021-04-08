@@ -42,6 +42,7 @@ const Player = (props) => {
     currentIndex,
     mode,
     sequenceList,
+    favoriteList,
   } = props;
 
   const audio = useRef(null);
@@ -422,6 +423,28 @@ const Player = (props) => {
     }, 300);
   };
 
+  const isFavorite = (song) => {
+    const index = favoriteList.findIndex((item) => {
+      return item.id === song.id;
+    });
+    return index > -1;
+  };
+
+  const getFavoriteIcon = (song) => {
+    if (isFavorite(song)) {
+      return "icon-favorite";
+    }
+    return "icon-not-favorite";
+  };
+
+  const toggleFavorite = (song) => {
+    if (isFavorite(song)) {
+      props.deleteFavoriteList(song);
+    } else {
+      props.saveFavoriteList(song);
+    }
+  };
+
   /**
    * 计算内层Image的transform，并同步到外层容器   没有pause样式的情况下
    * @param wrapper
@@ -453,13 +476,13 @@ const Player = (props) => {
   }, [currentSong]);
 
   useEffect(() => {
-    if(!audio.current) return
+    if (!audio.current) return;
     playing ? audio.current.play().catch((error) => {}) : audio.current.pause();
   }, [playing]);
 
   return (
     <>
-      {currentSong&&currentSong.id && (
+      {currentSong && currentSong.id && (
         <>
           <div
             className="player"
@@ -584,7 +607,10 @@ const Player = (props) => {
                       <i className="icon-next" onClick={next}></i>
                     </div>
                     <div className="icon iRight">
-                      <i className="icon icon-not-favorite"></i>
+                      <i
+                        className={`icon ${getFavoriteIcon(currentSong)}`}
+                        onClick={() => toggleFavorite(currentSong)}
+                      ></i>
                     </div>
                   </div>
                 </div>
@@ -659,6 +685,7 @@ const mapStateToProps = (state) => ({
   currentIndex: state.playerReducer.currentIndex,
   mode: state.playerReducer.mode,
   sequenceList: state.playerReducer.sequenceList,
+  favoriteList: state.playerReducer.favoriteList,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -678,9 +705,15 @@ const mapDispatchToProps = (dispatch) => {
     setPlayList(list) {
       dispatch(actionCreators.setPlayList(list));
     },
-    savePlayHistory(song){
-      dispatch(actionCreators.savePlayHistory(song))
-    }
+    savePlayHistory(song) {
+      dispatch(actionCreators.savePlayHistory(song));
+    },
+    saveFavoriteList(song) {
+      dispatch(actionCreators.saveFavoriteList(song));
+    },
+    deleteFavoriteList(song) {
+      dispatch(actionCreators.deleteFavoriteList(song));
+    },
   };
 };
 

@@ -1,7 +1,15 @@
 import * as constants from "./actionTypes";
 import { playMode } from "@/common/js/config";
 import { shuffle } from "@/common/js/util";
-import { saveSearch, deleteSearch, clearSearch,savePlay } from "@/common/js/cache";
+import {
+  saveSearch,
+  deleteSearch,
+  clearSearch,
+  savePlay,
+  saveFavorite,
+  deleteFavorite,
+  loadFavorite,
+} from "@/common/js/cache";
 
 let mode = 0;
 
@@ -279,7 +287,7 @@ export const deleteSong = (song, playlist, sequenceList, currentIndex) => {
         type: constants.SET_PLAYING_STATE,
         value: false,
       });
-    } else{
+    } else {
       dispatch({
         type: constants.SET_PLAYING_STATE,
         value: true,
@@ -288,9 +296,8 @@ export const deleteSong = (song, playlist, sequenceList, currentIndex) => {
   };
 };
 
-
-export const deleteSongList = ()=>{
-  return dispatch=>{
+export const deleteSongList = () => {
+  return (dispatch) => {
     dispatch({
       type: constants.SET_PLAYLIST,
       value: [],
@@ -311,15 +318,32 @@ export const deleteSongList = ()=>{
       type: constants.SET_PLAYING_STATE,
       value: false,
     });
-  }
-}
+  };
+};
 
-export const savePlayHistory = (song)=>{
-  console.log(savePlay(song))
-  return dispatch=>{
+export const savePlayHistory = (song) => {
+  return (dispatch) => {
     dispatch({
-      type:constants.SAVE_PLAY_HISTORY,
-      value:savePlay(song)
-    })
-  }
-}
+      type: constants.SAVE_PLAY_HISTORY,
+      value: savePlay(song),
+    });
+  };
+};
+
+export const saveFavoriteList = (song) => {
+  return (dispatch) => {
+    dispatch({
+      type: constants.SET_FAVORITE_LIST,
+      value: saveFavorite(song),
+    });
+  };
+};
+
+export const deleteFavoriteList = (song) => {
+  return (dispatch) => {
+    dispatch({
+      type: constants.SET_FAVORITE_LIST,
+      value: deleteFavorite(song),
+    });
+  };
+};

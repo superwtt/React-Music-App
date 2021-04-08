@@ -1,6 +1,6 @@
 import { playMode } from "@/common/js/config";
 import * as constants from "./actionTypes";
-import { loadSearch } from "@/common/js/cache";
+import { loadSearch,loadFavorite,loadPlay } from "@/common/js/cache";
 
 const defaultState = {
   singer: {},
@@ -12,7 +12,8 @@ const defaultState = {
   currentIndex: -1, // 当前播放歌曲的索引
   currentSong: {}, // 当前播放歌曲
   searchHistory: loadSearch(), // 搜索历史
-  playHistory: [],
+  playHistory: loadPlay(),
+  favoriteList: loadFavorite()
 };
 
 export default (state = defaultState, action) => {
@@ -41,6 +42,8 @@ export default (state = defaultState, action) => {
       return { ...state, searchHistory: [] };
     case constants.SAVE_PLAY_HISTORY:
       return { ...state, playHistory: action.value };
+      case constants.SET_FAVORITE_LIST:
+        return { ...state, favoriteList: action.value };  
     default:
       return state;
   }

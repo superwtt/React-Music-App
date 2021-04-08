@@ -110,17 +110,16 @@ const AddSong = (props) => {
               currentIndex={currentIndex}
               switches={switches}
             />
-            {currentIndex === 0 && (
-              <div className="list-wrappers">
+
+            <div className="list-wrappers">
+              {currentIndex === 0 && (
                 <Scroll classVal={"list-scroll"} data={playHistory}>
                   <div className="list-inner">
                     <SongList selectItem={selectItem} songs={playHistory} />
                   </div>
                 </Scroll>
-              </div>
-            )}
-            {currentIndex === 1 && (
-              <div className="list-wrappers">
+              )}
+              {currentIndex === 1 && (
                 <Scroll classVal={"list-scroll"} data={playHistory}>
                   <div className="list-inner">
                     <SearchList
@@ -130,8 +129,9 @@ const AddSong = (props) => {
                     />
                   </div>
                 </Scroll>
-              </div>
-            )}
+              )}
+            </div>
+            {currentIndex === 1 && <div className="list-wrappers"></div>}
           </div>
         )}
         {query && (
