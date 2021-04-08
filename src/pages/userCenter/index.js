@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Scroll from "@/common/component/scroll";
 import SongList from "@/common/component/songList";
 import Song from "@/common/js/song";
-import SearchList from "@/common/component/searchList";
+import NoResult from "@/common/component/noResult";
 import * as actionCreators from "@/pages/player/store/actionCreators";
 import Switches from "@/common/component/switches";
 import "./index.less";
@@ -43,10 +43,25 @@ const UserCenter = (props) => {
 
   const randomPlay = () => {
     let list = currentIndex === 0 ? favoriteList : playHistory;
+    if(!list.length) return
     list = list.map((song) => {
       return new Song(song);
     });
     props.randomPlay(list);
+  };
+
+  const noResult = () => {
+    if (currentIndex === 0) {
+      return !favoriteList.length;
+    }
+    return !playHistory.length;
+  };
+
+  const noResultDesc = () => {
+    if (currentIndex === 0) {
+      return "暂无收藏歌曲";
+    }
+    return "你还没有听过歌曲";
   };
 
   return (
@@ -77,11 +92,16 @@ const UserCenter = (props) => {
           {currentIndex === 1 && (
             <Scroll classVal={"list-scroll"} data={playHistory}>
               <div className="list-inner">
-               <SongList selectItem={selectItem} songs={playHistory} />
+                <SongList selectItem={selectItem} songs={playHistory} />
               </div>
             </Scroll>
           )}
         </div>
+        {noResult() && (
+          <div className="no-result-wrapper">
+            <NoResult title={noResultDesc()} />
+          </div>
+        )}
       </div>
     </>
   );
