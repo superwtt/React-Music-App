@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
-import {connect} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
 
-import TopList from '../topList';
+import TopList from "../topList";
 import Loading from "@/common/component/loading";
 import Scroll from "@/common/component/scroll";
-import * as actionCreators from '../recommend/store/actionCreators';
+import * as actionCreators from "../recommend/store/actionCreators";
 import { getTopList } from "@/services/rank";
 import { ERR_OK } from "@/services/config";
 import "./index.less";
 
 const Rank = (props) => {
   const [topListArray, setTopListArray] = useState([]);
-  const [showTopList,setShowTopList] = useState(false);
+  const [showTopList, setShowTopList] = useState(false);
+
+  const listViewRef = useRef(null);
+
+  const { playList } = props;
 
   const _getTopList = () => {
     getTopList().then((res) => {
@@ -21,29 +25,46 @@ const Rank = (props) => {
     });
   };
 
-  const selectItem = (item)=>{
-    setShowTopList(true)
+  const selectItem = (item) => {
+    setShowTopList(true);
     props.setTopList(item);
-  }
+  };
 
-  const hide = ()=>{
-    setTimeout(()=>{
-      setShowTopList(false)
-    },300)
+  const hide = () => {
+    setTimeout(() => {
+      setShowTopList(false);
+    }, 300);
+  };
+
+  const handlePlaylist = (playList)=>{
+    if(!playList) return
+    const bottom = playList.length > 0 ? '60px' : '0'
+    document.getElementsByClassName("ranks")[0].style.bottom = bottom
+    listViewRef.current.refresh()
   }
-  
 
   useEffect(() => {
     _getTopList();
+    handlePlaylist(playList)
   }, []);
+
+  useEffect(()=>{
+    handlePlaylist(playList);
+  },[playList])
 
   return (
     <div className="ranks">
-      <Scroll classVal={"toplist"} data={topListArray}>
+      <Scroll ref={listViewRef} classVal={"toplist"} data={topListArray}>
         <ul>
           {topListArray.map((item, index) => {
             return (
-              <li className="item" key={index} onClick={()=>{selectItem(item)}}>
+              <li
+                className="item"
+                key={index}
+                onClick={() => {
+                  selectItem(item);
+                }}
+              >
                 <div className="icon">
                   <img width="100" height="100" src={item.picUrl} alt="" />
                 </div>
@@ -70,22 +91,22 @@ const Rank = (props) => {
         )}
       </Scroll>
 
-      {
-        showTopList&&<TopList rank={true} showTopList={showTopList} hide={hide} />
-      }
+      {showTopList && (
+        <TopList rank={true} showTopList={showTopList} hide={hide} />
+      )}
     </div>
   );
 };
 
-
 const mapStateToProps = (state) => ({
   topList: state.recommendReducer.topList,
+  playList:state.playerReducer.playList
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setTopList(topList) {
-      dispatch(actionCreators.setTopList(topList))
+      dispatch(actionCreators.setTopList(topList));
     },
   };
 };

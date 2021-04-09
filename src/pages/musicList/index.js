@@ -20,7 +20,7 @@ const MusicList = (props) => {
   const [scrollY, setScrollY] = useState(0);
   const [num, setNum] = useState(-1);
 
-  const { songs,rank } = props;
+  const { songs,rank,playList } = props;
 
   const musicList = useRef(null);
 
@@ -45,6 +45,17 @@ const MusicList = (props) => {
   const randomPlay = () => {
     props.randomPlay(songs);
   };
+
+  const handlePlaylist = () => {
+    // throw new Error("component must implement handlePlaylist method");
+    if(!playList) return
+    const bottom = playList.length > 0 ? '60px' : '0'
+
+    document.getElementsByClassName("musicList")[0].style.bottom = bottom;
+
+    musicList.current.refresh()
+  };
+
 
   useEffect(() => {
     setNum(1);
@@ -113,6 +124,12 @@ const MusicList = (props) => {
     // filter.style.filter=`blur(${blur}px)`;
   }, [scrollY]);
 
+  useEffect(()=>{
+    handlePlaylist(playList);
+  },[playList])
+
+
+
   return (
     <div className="musicList">
       <div className="back" onClick={back}>
@@ -172,6 +189,7 @@ MusicList.propTypes = {
 
 const mapStateToProps = (state) => ({
   fullScreen: state.playerReducer.fullScreen,
+  playList: state.playerReducer.playList,
 });
 
 const mapDispatchToProps = (dispatch) => {

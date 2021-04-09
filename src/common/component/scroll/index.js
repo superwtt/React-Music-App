@@ -44,6 +44,8 @@ const Scroll = forwardRef((props, ref) => {
 
   const _initScroll = () => {
     if (!wrapperRef.current) return;
+    console.log("进来初始化了")
+    console.log(wrapperRef)
 
     const sc = new BScroll(wrapperRef.current, {
       probeType: props.probeType,
@@ -65,6 +67,8 @@ const Scroll = forwardRef((props, ref) => {
     scroll && scroll.disable();
   };
   const refresh = () => {
+    console.log("进来刷新了")
+    console.log(scroll)
     scroll && scroll.refresh();
     // bindScroll();
   };
