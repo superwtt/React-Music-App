@@ -543,7 +543,7 @@ const Player = (props) => {
                     <Scroll
                       classVal={"middle-r"}
                       customMade={"lyric"}
-                      data={currentLyric ? currentLyric.lines : []}
+                      data={currentLyric.lines}
                       ref={lyricList}
                     >
                       <div className="lyric-wrapper">
