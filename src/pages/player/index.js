@@ -159,6 +159,7 @@ const Player = (props) => {
   };
 
   const miniTogglePlaying = (e) => {
+    console.log(e.nativeEvent)
     e.stopPropagation();
     togglePlaying();
   };

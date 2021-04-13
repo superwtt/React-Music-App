@@ -56,6 +56,7 @@ const ListView = forwardRef((props,ref) => {
   };
 
   const onShortcutTouchMove = (e) => {
+    console.log(e.nativeEvent)
     e.stopPropagation(); // 阻止事件冒泡
 
     let firstTouch = e.touches[0];
