@@ -71,6 +71,7 @@ const ListView = forwardRef((props,ref) => {
   };
 
   const _calculateHeight = () => {
+    
     setListHeight([]);
 
     const listH = [];
